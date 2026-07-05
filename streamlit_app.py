@@ -55,17 +55,17 @@ def get_live_market_data(symbol):
         mocks = {'BTCUSDT': (92450.0, 2.3), 'ETHUSDT': (3420.0, 4.1), 'SOLUSDT': (184.6, 5.8), 'BNBUSDT': (585.0, -0.4)}
         return mocks.get(symbol, (100.0, 0.0))
 
-# ক্যান্ডেলস্টিক চার্ট নড়াচড়া করানোর জন্য ডাইনামিক লাইভ ডাটা জেনারেটর
+# ক্যান্ডেলস্টিক চার্ট নড়াচড়া করানোর জন্য ডাইনামিক লাইভ ডাটা জেনারেটর (বাইনান্সের মতো ক্যান্ডেল সংখ্যা বাড়ানো হয়েছে)
 def generate_live_candles(base_price):
     now = datetime.now()
-    dates = [now - timedelta(minutes=x) for x in range(15, 0, -1)]
+    dates = [now - timedelta(minutes=x) for x in range(40, 0, -1)]
     opens, highs, lows, closes = [], [], [], []
-    current = base_price - 3.5
-    for _ in range(14):
+    current = base_price - 5.5
+    for _ in range(39):
         o = current
-        c = o + random.uniform(-1.8, 2.0)
-        h = max(o, c) + random.uniform(0.1, 0.9)
-        l = min(o, c) - random.uniform(0.1, 0.9)
+        c = o + random.uniform(-2.2, 2.5)
+        h = max(o, c) + random.uniform(0.1, 1.2)
+        l = min(o, c) - random.uniform(0.1, 1.2)
         opens.append(o)
         highs.append(h)
         lows.append(l)
@@ -73,8 +73,8 @@ def generate_live_candles(base_price):
         current = c
     last_o = current
     last_c = base_price
-    last_h = max(last_o, last_c) + random.uniform(0.05, 0.3)
-    last_l = min(last_o, last_c) - random.uniform(0.05, 0.3)
+    last_h = max(last_o, last_c) + random.uniform(0.05, 0.4)
+    last_l = min(last_o, last_c) - random.uniform(0.05, 0.4)
     opens.append(last_o)
     highs.append(last_h)
     lows.append(last_l)
@@ -121,21 +121,22 @@ if menu == "🏠 Execution Terminal":
         st.write("📈 **HFT Execution Candlestick Analytics (Live Continuous Wave)**")
         dates, opens, highs, lows, closes = generate_live_candles(sol_p)
         
-        # বাইনান্সের মতো ক্যান্ডেলের ডিজাইন সেটিংস
+        # ক্যান্ডেলের বডি ও উইক আরও চিকন ও সূক্ষ্ম করা হলো
         fig = go.Figure(data=[go.Candlestick(
             x=dates, open=opens, high=highs, low=lows, close=closes,
             increasing_line_color='#02c076', decreasing_line_color='#f6465d',
-            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d'
+            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
+            line=dict(width=1.0) # উইক বা সুতো আরও চিকন করা হলো
         )])
         
-        # বাইনান্স থিম গ্রিড সেটিংস
+        # বাইনান্সের চার্ট রেশিও এবং পিক্সেল গ্যাপ ফিক্সিং সেটিং
         fig.update_layout(
             plot_bgcolor='#161a1e',
             paper_bgcolor='#0b0e11',
             xaxis_rangeslider_visible=False,
             height=380,
             margin=dict(t=10, b=10, l=10, r=10),
-            xaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1),
+            xaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, type='date', range=[dates[0], dates[-1]]),
             yaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, side='right')
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -155,7 +156,6 @@ if menu == "🏠 Execution Terminal":
     time.sleep(1.0)
     st.rerun()
 
-# (বাকি কোড অপরিবর্তিত রয়েছে...)
 elif menu == "💼 Account Balance Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     st.write("---")
@@ -170,4 +170,3 @@ elif menu == "⚙️ Cryptographic Vault":
     st.write("---")
     st.text_input("Exchange Public API Identifier", type="password", placeholder="Paste secure public API key...")
     st.text_input("Exchange Encrypted Private Signature", type="password", placeholder="Paste secure private secret signature...")
-    if st.button("🔒 SEAL & DEPLOY CREDENTIALS"): st.success("🔒 API credentials locked successfully.")
