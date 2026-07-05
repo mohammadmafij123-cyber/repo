@@ -35,7 +35,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Top Header Bar
+# 3. Top Executive Header Bar
 st.markdown("""
     <div class='nexus-header'>
         <div style='display: flex; align-items: center;'>
@@ -150,7 +150,7 @@ if menu == "🏠 Execution Terminal":
             st.success("Target Captured: Optimal structural setup loaded on SOLUSDT.")
             tp_price = sol_p * 1.04
             sl_price = sol_p * 0.98
-            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #ff4b4b; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
     time.sleep(1.0)
     st.rerun()
@@ -176,4 +176,4 @@ elif menu == "⚙️ Cryptographic Vault":
     st.write("---")
     st.text_input("Exchange Public API Identifier", type="password", placeholder="Paste secure public API key...")
     st.text_input("Exchange Encrypted Private Signature", type="password", placeholder="Paste secure private secret signature...")
-    if st.button("🔒 SEAL & DEPLOY CREDENTIALS"): 
+    if st.button("🔒 SEAL & DEPLOY CREDENTIALS"):
