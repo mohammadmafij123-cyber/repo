@@ -84,6 +84,7 @@ if menu == "📊 Trading Terminal":
             value = 84,
             domain = {'x':, 'y': [0, 1]},
             title = {'text': "AI Market Signal Strength (Strong Buy Zone)", 'font': {'size': 14, 'color': '#848e9c'}},
+
             gauge = {
                 'axis': {'range':, 'tickwidth': 1, 'tickcolor': "#848e9c"},
                 'bar': {'color': "#f0b90b"},
