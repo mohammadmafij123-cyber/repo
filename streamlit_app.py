@@ -2,14 +2,12 @@ import streamlit as st
 import time
 import requests
 import pandas as pd
-import plotly.graph_objects as go
-from datetime import datetime, timedelta
-import random
+import streamlit.components.v1 as components
 
-# 1. Advanced Page Configuration
+# 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Trading Terminal", page_icon="⚡", layout="wide")
 
-# 2. Premium Themes & Custom CSS
+# 2. Ultra-Premium Themes & Custom CSS
 st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
@@ -42,7 +40,7 @@ st.markdown("""
             <div class='nexus-logo'>🔶 NEXUS QUANTUM</div>
             <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
         </div>
-        <div class='system-status'>● NETWORK ALIVE | LATENCY: 12ms | LIVE UPDATING</div>
+        <div class='system-status'>● ENGINE ALIVE | FEED: BINANCE REAL-TIME | SMOOTH ANIMATION</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -54,32 +52,6 @@ def get_live_market_data(symbol):
     except:
         mocks = {'BTCUSDT': (92450.0, 2.3), 'ETHUSDT': (3420.0, 4.1), 'SOLUSDT': (184.6, 5.8), 'BNBUSDT': (585.0, -0.4)}
         return mocks.get(symbol, (100.0, 0.0))
-
-# ক্যান্ডেলস্টিক চার্ট নড়াচড়া করানোর জন্য ডাইনামিক লাইভ ডাটা জেনারেটর (বাইনান্সের মতো ক্যান্ডেল সংখ্যা বাড়ানো হয়েছে)
-def generate_live_candles(base_price):
-    now = datetime.now()
-    dates = [now - timedelta(minutes=x) for x in range(40, 0, -1)]
-    opens, highs, lows, closes = [], [], [], []
-    current = base_price - 5.5
-    for _ in range(39):
-        o = current
-        c = o + random.uniform(-2.2, 2.5)
-        h = max(o, c) + random.uniform(0.1, 1.2)
-        l = min(o, c) - random.uniform(0.1, 1.2)
-        opens.append(o)
-        highs.append(h)
-        lows.append(l)
-        closes.append(c)
-        current = c
-    last_o = current
-    last_c = base_price
-    last_h = max(last_o, last_c) + random.uniform(0.05, 0.4)
-    last_l = min(last_o, last_c) - random.uniform(0.05, 0.4)
-    opens.append(last_o)
-    highs.append(last_h)
-    lows.append(last_l)
-    closes.append(last_c)
-    return dates, opens, highs, lows, closes
 
 btc_p, btc_pct = get_live_market_data('BTCUSDT')
 eth_p, eth_pct = get_live_market_data('ETHUSDT')
@@ -118,28 +90,61 @@ if menu == "🏠 Execution Terminal":
     left_layout, right_layout = st.columns([1.6, 1])
 
     with left_layout:
-        st.write("📈 **HFT Execution Candlestick Analytics (Live Continuous Wave)**")
-        dates, opens, highs, lows, closes = generate_live_candles(sol_p)
+        st.write("📈 **Binance Pro Advanced Feed (Smooth Live Pulse Motion)**")
         
-        # ক্যান্ডেলের বডি ও উইক আরও চিকন ও সূক্ষ্ম করা হলো
-        fig = go.Figure(data=[go.Candlestick(
-            x=dates, open=opens, high=highs, low=lows, close=closes,
-            increasing_line_color='#02c076', decreasing_line_color='#f6465d',
-            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
-            line=dict(width=1.0) # উইক বা সুতো আরও চিকন করা হলো
-        )])
-        
-        # বাইনান্সের চার্ট রেশিও এবং পিক্সেল গ্যাপ ফিক্সিং সেটিং
-        fig.update_layout(
-            plot_bgcolor='#161a1e',
-            paper_bgcolor='#0b0e11',
-            xaxis_rangeslider_visible=False,
-            height=380,
-            margin=dict(t=10, b=10, l=10, r=10),
-            xaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, type='date', range=[dates[0], dates[-1]]),
-            yaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, side='right')
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        # বিশ্বমানের লাইটওয়েট ট্রেডিংভিউ চার্ট স্ক্রিপ্ট ইম্বেড (যা পুরো বাইনান্স এক্সচেঞ্জে ব্যবহৃত হয়)
+        binance_chart_html = f"""
+        <div id="chart-container" style="width: 100%; height: 380px; background-color: #161a1e; border-radius: 6px; border: 1px solid #24292e; overflow: hidden;"></div>
+        <script src="https://unpkg.com"></script>
+        <script>
+            const container = document.getElementById('chart-container');
+            const chart = LightweightCharts.createChart(container, {{
+                width: container.clientWidth,
+                height: 380,
+                layout: {{ backgroundColor: '#161a1e', textColor: '#848e9c' }},
+                grid: {{ vertLines: {{ color: '#24292e' }}, horzLines: {{ color: '#24292e' }} }},
+                crosshair: {{ mode: LightweightCharts.CrosshairMode.Normal }},
+                priceScale: {{ position: 'right', borderVisible: false }},
+                timeScale: {{ borderVisible: false, timeVisible: true, secondsVisible: false }}
+            }});
+
+            const candleSeries = chart.addCandlestickSeries({{
+                upColor: '#02c076', downColor: '#f6465d', borderUpColor: '#02c076',
+                borderDownColor: '#f6465d', wickUpColor: '#02c076', wickDownColor: '#f6465d'
+            }});
+
+            // ডাইনামিক হিস্টোরিক্যাল বেস ডাটা জেনারেশন
+            let basePrice = {sol_p};
+            let data = [];
+            let timeStamp = Math.floor(Date.now() / 1000) - 30 * 60;
+
+            for (let i = 0; i < 30; i++) {{
+                let open = basePrice + (Math.random() - 0.5) * 3;
+                let close = open + (Math.random() - 0.5) * 2;
+                data.push({{
+                    time: timeStamp + i * 60,
+                    open: open,
+                    high: Math.max(open, close) + Math.random(),
+                    low: Math.min(open, close) - Math.random(),
+                    close: close
+                }});
+                basePrice = close;
+            }}
+            candleSeries.setData(data);
+
+            // লাইভ অ্যানিমেশন মেকানিজম (প্রতি ১ সেকেন্ডে শেষের ক্যান্ডেলটি মসৃণভাবে কাঁপবে)
+            let lastCandle = data[data.length - 1];
+            setInterval(() => {{
+                let liveChange = (Math.random() - 0.5) * 0.4;
+                lastCandle.close += liveChange;
+                if (lastCandle.close > lastCandle.high) lastCandle.high = lastCandle.close;
+                if (lastCandle.close < lastCandle.low) lastCandle.low = lastCandle.close;
+                candleSeries.update(lastCandle);
+            }}, 1000);
+        </script>
+        """
+        # স্ক্রিন রিফ্রেশ না হয়ে ভেতরের ক্যান্ডেলটি শুধু রিয়াল-টাইম মুভ করবে
+        components.html(binance_chart_html, height=390)
 
     with right_layout:
         st.write("### 🎛️ Algorithmic Control Hub")
@@ -151,10 +156,7 @@ if menu == "🏠 Execution Terminal":
             st.success("Target Captured: Optimal structural setup loaded on SOLUSDT.")
             tp_price = sol_p * 1.04
             sl_price = sol_p * 0.98
-            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
-
-    time.sleep(1.0)
-    st.rerun()
+            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #ff4b4b; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
 elif menu == "💼 Account Balance Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
@@ -162,11 +164,3 @@ elif menu == "💼 Account Balance Assets":
     portfolio_data = {'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'], 'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'], 'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'], 'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']}
     st.table(pd.DataFrame(portfolio_data))
 elif menu == "📰 Alpha Intelligence":
-    st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
-    st.write("---")
-    st.markdown("<div class='nexus-card'><h4 style='color: #f0b90b; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls.</p></div>", unsafe_allow_html=True)
-elif menu == "⚙️ Cryptographic Vault":
-    st.markdown("<h1>⚙️ Asymmetric Exchange API Vault</h1>", unsafe_allow_html=True)
-    st.write("---")
-    st.text_input("Exchange Public API Identifier", type="password", placeholder="Paste secure public API key...")
-    st.text_input("Exchange Encrypted Private Signature", type="password", placeholder="Paste secure private secret signature...")
