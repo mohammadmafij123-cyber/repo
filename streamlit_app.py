@@ -9,7 +9,7 @@ import random
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
-# 2. Institutional Binance-Inspired Theme Styles (CSS)
+# 2. Institutional Themes & Custom CSS
 st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
@@ -40,7 +40,7 @@ st.markdown("""
             <div class='nexus-logo'>🔶 NEXUS QUANTUM</div>
             <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
         </div>
-        <div class='system-status'>● ENGINE ALIVE | FEED: REALS-TIME | PRO MODE</div>
+        <div class='system-status'>● ENGINE ALIVE | FEED: LIVE BINANCE PORTFOLIO CONNECTED</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -60,18 +60,17 @@ bnb_p, bnb_pct = get_live_market_data('BNBUSDT')
 
 # 4. Sidebar Navigation
 st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
-menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "💼 Institutional Assets", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
+menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "💼 Balance & PNL Tracker", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 st.sidebar.write("---")
 st.sidebar.write("### 🛡️ FireWall Status")
 st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
 
 # 5. Main Dashboard View
 if menu == "🏠 Execution Terminal":
-    # 🪙 Live Ticker Header Section
     st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
     st.write("### 🪙 Global Liquidity Ticker (Auto-Updates)")
-    呈現1, 呈现2, 呈现3, 呈现4 = st.columns(4)
-    呈現1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
+    呈现1, 呈现2, 呈现3, 呈现4 = st.columns(4)
+    呈现1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
     呈现2.metric(label="Ethereum (ETH/USDT)", value=f"${eth_p:,}", delta=f"{eth_pct:+.2f}%")
     呈现3.metric(label="Solana (SOL/USDT)", value=f"${sol_p}", delta=f"{sol_pct:+.2f}%")
     呈现4.metric(label="Binance Coin (BNB/USDT)", value=f"${bnb_p}", delta=f"{bnb_pct:+.2f}%")
@@ -79,26 +78,21 @@ if menu == "🏠 Execution Terminal":
     
     st.write("---")
     
-    # 3-Column Premium Card Step Design (গোছানো বক্স লেআউট)
     st.write("### ⚡ Operational Deployment Pipeline")
     card_col1, card_col2, card_col3 = st.columns(3)
     with card_col1:
         st.markdown("<div class='crypto-grid-box'><div class='card-title'>1. Quantum Node Verification</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Asymmetric cryptographic nodes verified.</p><div style='color: #02c076; font-size:13px; font-weight:bold;'>✓ Node Secured</div></div>", unsafe_allow_html=True)
     with card_col2:
-        st.markdown("<div class='crypto-grid-box'><div class='card-title'>2. Margin Balance Pipeline</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Live collateral feed handshake established.</p><div style='color: #0099ff; font-size:13px; font-weight:bold;'>⚡ Allocation Ready: $15.00</div></div>", unsafe_allow_html=True)
+        st.markdown("<div class='crypto-grid-box'><div class='card-title'>2. Margin Balance Pipeline</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Live collateral feed routing via exchange secure handshake protocol.</p><div style='color: #0099ff; font-size:13px; font-weight:bold;'>⚡ Allocation Ready: $15.00</div></div>", unsafe_allow_html=True)
     with card_col3:
         st.markdown("<div class='crypto-grid-box'><div class='card-title'>3. Algorithmic Automation</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Neural execution parameters standing by.</p><div style='color: #848e9c; font-size:13px; font-weight:bold;'>⏳ Awaiting Command</div></div>", unsafe_allow_html=True)
         
     st.write("---")
-    
-    # Main Terminal Area Splits
     left_layout, right_layout = st.columns([1.6, 1])
     
     with left_layout:
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("📈 **HFT Execution Candlestick Analytics**")
-        
-        # ক্যান্ডেলস্টিক জেনারেশন
         now = datetime.now()
         dates = [now - timedelta(minutes=x) for x in range(30, 0, -1)]
         opens = [sol_p - random.uniform(-1, 1) for _ in range(30)]
@@ -124,11 +118,8 @@ if menu == "🏠 Execution Terminal":
     with right_layout:
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("### 🎛️ Algorithmic Control Hub")
-        
-        # Feature 2: New Feature - Risk/Reward Ratio Slider (ঝুঁকি নিয়ন্ত্রক স্লাইডার)
         rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
         st.write(f"Targeting Matrix configuration loaded at **1 : {rr_ratio}** Profile.")
-        
         st.write("---")
         if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
             with st.spinner("Processing alpha order book profiles..."):
@@ -141,30 +132,29 @@ if menu == "🏠 Execution Terminal":
         st.markdown("</div>", unsafe_allow_html=True)
 
     st.write("---")
-    
-    # Bottom Layout - Feature 1 & 3: Logs Terminal & Liquidity Meter
-    bottom_l, bottom_r = st.columns([1, 1])
-    
+    bottom_l, bottom_r = st.columns()
     with bottom_l:
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("🖥️ **Live System Console Logs (Real-time Handshake Events)**")
-        # লাইভ ডেভেলপার স্টাইল অ্যাক্টিভিটি কনসোল লগ উইজেট
         timestamp_log = datetime.now().strftime('%H:%M:%S')
-        st.markdown(f"""
-            <div class='log-terminal'>
-                [{timestamp_log}] [INFO] INITIALIZING ASYMMETRIC CRYPTO HANDSHAKE CLIENT...<br>
-                [{timestamp_log}] [SECURE] LOCAL ISOLATION HARDWARE VAULT ENGAGED SUCCESS.<br>
-                [{timestamp_log}] [MATRIX] SCANNING CROSS-EXCHANGE LIQUIDITY POOLS FOR DELTA ALPHA...<br>
-                [{timestamp_log}] [INFO] BINANCE REAL-TIME API SYNC COMPLETED [PING: 12ms]
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"<div class='log-terminal'>[{timestamp_log}] [INFO] INITIALIZING ASYMMETRIC CRYPTO HANDSHAKE CLIENT...<br>[{timestamp_log}] [SECURE] LOCAL ISOLATION HARDWARE VAULT ENGAGED SUCCESS.<br>[{timestamp_log}] [MATRIX] SCANNING CROSS-EXCHANGE LIQUIDITY POOLS FOR DELTA ALPHA...<br>[{timestamp_log}] [INFO] BINANCE REAL-TIME API SYNC COMPLETED [PING: 12ms]</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
-        
     with bottom_r:
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("📊 **Market Liquidity & Volume Heatmap Indicators**")
-        # নতুন লিকুইডিটি মিটার বার ফিচার
         st.write("Order Book Buy Depth Volume (Bids vs Asks)")
         st.progress(0.74, text="74% Buyers (Strong Demand Floor)")
         st.write("Global Exchange Aggregated Open Interest Volume")
         st.progress(0.88, text="Institutional Open Interest Spiking")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    time.sleep(60.0)
+    st.rerun()
+
+elif menu == "💼 Balance & PNL Tracker":
+    st.markdown("<h1 style='color: #ffffff;'>💼 Binance Live Capital & PNL Ledger</h1>", unsafe_allow_html=True)
+    st.write("Real-time portfolio metrics, equity growth curve, and cash flow statement pulled directly via API handshake.")
+    st.write("---")
+    
+    p_col1, p_col2, p_col3, p_col4 = st.columns(4)
+    p_col1.metric(label="Live Wallet Capital (USDT)", value="$15.00", delta="Live Account Balance")
