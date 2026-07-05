@@ -42,7 +42,8 @@ st.write("---")
 
 # ডেমো চার্ট তৈরির ফাংশন (Professional Candlestick)
 def show_crypto_chart():
-    dates = pd.date_range(end=datetime.today(), periods=24, freq='H')
+    dates = pd.date_range(end=datetime.today(), periods=24, freq='h')
+
     fig = go.Figure(data=[go.Candlestick(
         x=dates,
         open=[181, 182, 180, 183, 182, 184, 183, 185, 184, 186, 185, 184, 185, 186, 185, 187, 186, 188, 187, 189, 188, 187, 186, 184.6],
