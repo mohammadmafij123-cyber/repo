@@ -58,7 +58,7 @@ eth_p, eth_pct = get_live_market_data('ETHUSDT')
 sol_p, sol_pct = get_live_market_data('SOLUSDT')
 bnb_p, bnb_pct = get_live_market_data('BNBUSDT')
 
-# 4. Sidebar Navigation (ন্যাভিগেশন মেনু সহজ করা হলো)
+# 4. Sidebar Navigation
 st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
 menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 st.sidebar.write("---")
@@ -154,6 +154,7 @@ if menu == "🏠 Execution Terminal":
 elif menu == "📰 Alpha Intelligence":
     st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
     st.write("---")
-    st.markdown("<div class='nexus-card'><h4 style='color: #f0b90b; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls anchoring key levels.</p></div>", unsafe_allow_html=True)
+    st.markdown("<div class='nexus-card'><h4>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls anchoring key levels.</p></div>", unsafe_allow_html=True)
 
 elif menu == "⚙️ Cryptographic Vault":
+    st.markdown("<h1>⚙️ Asymmetric Exchange API Vault</h1>", unsafe_allow_html=True)
