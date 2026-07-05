@@ -78,13 +78,12 @@ if menu == "📊 Trading Terminal":
         fig.update_layout(title="SOLUSDT Live Candlestick Dynamics", template="plotly_dark", xaxis_rangeslider_visible=False, height=350, margin=dict(t=30, b=10, l=10, r=10))
         st.plotly_chart(fig, use_container_width=True)
 
-        # Feature 1: Live Technical Indicator Gauge Meter (বাই/সেল স্পিডোমিটার)
+        # Corrected Technical Indicator Gauge Meter
         gauge_fig = go.Figure(go.Indicator(
             mode = "gauge+number",
             value = 84,
             domain = {'x':, 'y': [0, 1]},
             title = {'text': "AI Market Signal Strength (Strong Buy Zone)", 'font': {'size': 14, 'color': '#848e9c'}},
-
             gauge = {
                 'axis': {'range':, 'tickwidth': 1, 'tickcolor': "#848e9c"},
                 'bar': {'color': "#f0b90b"},
@@ -109,7 +108,7 @@ if menu == "📊 Trading Terminal":
             tp_price = sol_p * 1.04
             sl_price = sol_p * 0.98
             st.markdown(f"""
-                <div style='background-color: #161a1e; padding: 15px; border-radius: 6px; border-left: 4px solid #02c076; margin-top: 10px; border-1px-solid: #24292e;'>
+                <div style='background-color: #161a1e; padding: 15px; border-radius: 6px; border-left: 4px solid #02c076; margin-top: 10px;'>
                     <b style='color: #02c076;'>🟢 ORDER OPENED: BUY [SOLUSDT]</b><br>
                     • Entry Rate: ${sol_p:.2f}<br>
                     • Target Take-Profit (+4%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>
@@ -118,7 +117,7 @@ if menu == "📊 Trading Terminal":
             """, unsafe_allow_html=True)
 
         st.write("")
-        # Feature 2: Real-time Dynamic Order Book Depth Table (লাইভ অর্ডার বুক উইজেট)
+        # Real-time Dynamic Order Book Depth Table
         st.write("📋 Live Order Book Depth")
         ob_col1, ob_col2 = st.columns(2)
         with ob_col1:
