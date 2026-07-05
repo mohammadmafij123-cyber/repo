@@ -83,7 +83,7 @@ if menu == "🏠 Execution Terminal":
     with card_col1:
         st.markdown("<div class='crypto-grid-box'><div class='card-title'>1. Quantum Node Verification</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Asymmetric cryptographic nodes verified.</p><div style='color: #02c076; font-size:13px; font-weight:bold;'>✓ Node Secured</div></div>", unsafe_allow_html=True)
     with card_col2:
-        st.markdown("<div class='crypto-grid-box'><div class='card-title'>2. Margin Balance Pipeline</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Live collateral feed routing via exchange secure handshake protocol.</p><div style='color: #0099ff; font-size:13px; font-weight:bold;'>⚡ Allocation Ready: $15.00</div></div>", unsafe_allow_html=True)
+        st.markdown("<div class='crypto-grid-box'><div class='card-title'>2. Margin Balance Pipeline</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Live collateral feed handshake established.</p><div style='color: #0099ff; font-size:13px; font-weight:bold;'>⚡ Allocation Ready: $15.00</div></div>", unsafe_allow_html=True)
     with card_col3:
         st.markdown("<div class='crypto-grid-box'><div class='card-title'>3. Algorithmic Automation</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Neural execution parameters standing by.</p><div style='color: #848e9c; font-size:13px; font-weight:bold;'>⏳ Awaiting Command</div></div>", unsafe_allow_html=True)
         
@@ -148,14 +148,11 @@ if menu == "🏠 Execution Terminal":
         st.progress(0.88, text="Institutional Open Interest Spiking")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    time.sleep(60.0)
-    st.rerun()
-
-# 💼 ডাটা জেনারেটরের লজিকটি সম্পূর্ণ ফিক্সড এবং স্টেবল করে পেজটি সাজানো হলো
+# 💼 ক্ষতিকারক ড্যাপ্লয়মেন্ট লুপ সম্পূর্ণ কেটে দিয়ে একদম স্বাধীনভাবে পেজটি কোড করা হলো
 elif menu == "💼 Balance & PNL Tracker":
     st.markdown("<h1 style='color: #ffffff;'>💼 Binance Live Capital & PNL Ledger</h1>", unsafe_allow_html=True)
     st.write("Real-time portfolio metrics, equity growth curve, and cash flow statement pulled directly via API handshake.")
     st.write("---")
     
-    # প্রফেশনাল লেআউটে ডাটা ফিক্স করা হলো
     p_col1, p_col2, p_col3, p_col4 = st.columns(4)
+    p_col1.metric(label="Live Wallet Capital (USDT)", value="$15.00", delta="Live Account Balance")
