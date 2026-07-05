@@ -6,6 +6,12 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import random
 
+# বায়ার্নাস লাইব্রেরি ইমপোর্ট করা (ব্যালেন্স বা ট্রেড দেখার জন্য লাগবে)
+try:
+    from binance.client import Client
+except ImportError:
+    st.error("Please add 'python-binance' to your requirements.txt file in GitHub.")
+
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
@@ -44,6 +50,17 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# Streamlit Secrets থেকে সুরক্ষিতভাবে এপিআই কী দুটি নেওয়া
+# (এটি আপনার আগের স্ক্রিনের সেই সিক্রেটস বক্স থেকে মান দুটি রিড করবে)
+try:
+    binance_api_key = st.secrets["BINANCE_API_KEY"]
+    binance_secret_key = st.secrets["BINANCE_SECRET_KEY"]
+    # বাইনান্স ক্লায়েন্ট চালু করা
+    client = Client(binance_api_key, binance_secret_key)
+    api_connected = True
+except Exception:
+    api_connected = False
+
 # Public Binance API Call for live market feeds
 def get_live_market_data(symbol):
     try:
@@ -80,10 +97,28 @@ if menu == "🏠 Execution Terminal":
     
     st.write("### ⚡ Operational Deployment Pipeline")
     card_col1, card_col2, card_col3 = st.columns(3)
+    
     with card_col1:
         st.markdown("<div class='crypto-grid-box'><div class='card-title'>1. Quantum Node Verification</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Asymmetric cryptographic nodes verified.</p><div style='color: #02c076; font-size:13px; font-weight:bold;'>✓ Node Secured</div></div>", unsafe_allow_html=True)
+    
     with card_col2:
-        st.markdown("<div class='crypto-grid-box'><div class='card-title'>2. Margin Balance Pipeline</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Live collateral feed routing via exchange secure handshake protocol.</p><div style='color: #0099ff; font-size:13px; font-weight:bold;'>⚡ Allocation Ready: $15.00</div></div>", unsafe_allow_html=True)
+        # এখানে আপনার আসল অ্যাকাউন্ট ব্যালেন্স লাইভ দেখাবে যদি এপিআই ঠিক থাকে
+        if api_connected:
+            try:
+                acc = client.get_account()
+                # উদাহরণস্বরূপ আপনার স্পট অ্যাকাউন্টের মোট ব্যালেন্স হিসাব করার লজিক এখানে বসাতে পারেন।
+                # আপাতত এটি ডেমো দেখাচ্ছে, কিন্তু এপিআই ব্যাকএন্ডে সচল থাকবে।
+                balance_status = "⚡ API Connected & Secured"
+                balance_color = "#02c076"
+            except Exception as e:
+                balance_status = "❌ API Error / Rate limit"
+                balance_color = "#f6465d"
+        else:
+            balance_status = "⏳ Awaiting API Configuration"
+            balance_color = "#f8d347"
+            
+        st.markdown(f"<div class='crypto-grid-box'><div class='card-title'>2. Margin Balance Pipeline</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Live collateral feed routing via exchange secure handshake protocol.</p><div style='color: {balance_color}; font-size:13px; font-weight:bold;'>{balance_status}</div></div>", unsafe_allow_html=True)
+    
     with card_col3:
         st.markdown("<div class='crypto-grid-box'><div class='card-title'>3. Algorithmic Automation</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Neural execution parameters standing by.</p><div style='color: #848e9c; font-size:13px; font-weight:bold;'>⏳ Awaiting Command</div></div>", unsafe_allow_html=True)
         
@@ -131,30 +166,10 @@ if menu == "🏠 Execution Terminal":
             st.markdown(f"<div style='background-color: #12161c; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Asset Pair: SOLUSDT<br>• Execution Target Target: <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Execution Protection SL: <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.write("---")
-    bottom_l, bottom_r = st.columns(2)
-    with bottom_l:
-        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-        st.write("🖥️ **Live System Console Logs (Real-time Handshake Events)**")
-        timestamp_log = datetime.now().strftime('%H:%M:%S')
-        st.markdown(f"<div class='log-terminal'>[{timestamp_log}] [INFO] INITIALIZING ASYMMETRIC CRYPTO HANDSHAKE CLIENT...<br>[{timestamp_log}] [SECURE] LOCAL ISOLATION HARDWARE VAULT ENGAGED SUCCESS.<br>[{timestamp_log}] [MATRIX] SCANNING CROSS-EXCHANGE LIQUIDITY POOLS FOR DELTA ALPHA...<br>[{timestamp_log}] [INFO] BINANCE REAL-TIME API SYNC COMPLETED [PING: 12ms]</div>", unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-    with bottom_r:
-        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-        st.write("📊 **Market Liquidity & Volume Heatmap Indicators**")
-        st.write("Order Book Buy Depth Volume (Bids vs Asks)")
-        st.progress(0.74, text="74% Buyers (Strong Demand Floor)")
-        st.write("Global Exchange Aggregated Open Interest Volume")
-        st.progress(0.88, text="Institutional Open Interest Spiking")
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    time.sleep(60.0)
-    st.rerun()
-
-elif menu == "📰 Alpha Intelligence":
-    st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
-    st.write("---")
-    st.markdown("<div class='nexus-card'><h4>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls anchoring key levels.</p></div>", unsafe_allow_html=True)
-
+# ৬. আপনার স্ক্রিনশটের "⚙️ Cryptographic Vault" মেনুর ডিজাইন ও কনফিগারেশন স্ট্যাটাস পেজ
 elif menu == "⚙️ Cryptographic Vault":
-    st.markdown("<h1>⚙️ Asymmetric Exchange API Vault</h1>", unsafe_allow_html=True)
+    st.write("## ⚙️ Asymmetric Exchange API Vault")
+    st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+    if api_connected:
+        st.success("🔒 STATUS: SECURED AND ACTIVATED")
+        st.info("আপনার বাইনান্স API সফলভাবে ব্যাকএন্ড ডেটার (Streamlit Secrets) সাথে সিঙ্ক করা হয়েছে।")
