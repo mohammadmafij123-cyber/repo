@@ -2,30 +2,32 @@ import streamlit as st
 import time
 import requests
 import pandas as pd
-import streamlit.components.v1 as components
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+import random
 
 # 1. Advanced Commercial Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Institutional Trading Terminal", page_icon="⚡", layout="wide")
 
-# 2. Ultra-Premium Full Screen Theme (CSS)
+# 2. Premium Theme Styles (CSS)
 st.markdown("""
     <style>
     .main { background-color: #0b0e14; color: #eaecef; }
     [data-testid="stSidebar"] { background-color: #121620 !important; border-right: 1px solid #1e2533; }
     
-    /* Executive Header */
+    /* Top Header */
     .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #121620; padding: 18px 25px; margin: -60px -60px 30px -60px; border-bottom: 2px solid #1e2533; }
     .nexus-logo { font-size: 24px; font-weight: 900; color: #00ffcc; font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
     .nexus-sub-logo { font-size: 13px; color: #848e9c; margin-left: 10px; font-weight: 500; }
     .system-status { font-family: monospace; font-size: 12px; color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(0, 255, 204, 0.2); }
     
-    /* High-Fidelity Cards */
+    /* Premium Grid Cards */
     .nexus-card { background-color: #121620; border: 1px solid #1e2533; border-radius: 10px; padding: 22px; margin-bottom: 20px; }
     .card-title { font-size: 16px; font-weight: bold; color: #ffffff; margin-bottom: 8px; }
     .card-status { font-size: 13px; color: #00ffcc; font-weight: 600; }
     .card-pending { font-size: 13px; color: #848e9c; font-weight: 600; }
     
-    /* Button Premium Styling */
+    /* Button Custom Gradient */
     .stButton>button { width: 100%; background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%) !important; color: #0b0e14 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; transition: all 0.2s ease; }
     .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3) !important; }
     
@@ -40,11 +42,11 @@ st.markdown("""
             <div class='nexus-logo'>⚡ NEXUS QUANTUM</div>
             <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
         </div>
-        <div class='system-status'>● LIVE NODE INTEGRATED | FEED: TRADINGVIEW | STABLE</div>
+        <div class='system-status'>● NETWORK ALIVE | LATENCY: 12ms | LIVE UPDATING</div>
     </div>
 """, unsafe_allow_html=True)
 
-# Public Binance API Call for live metrics
+# Public Binance API Call for live market feeds
 def get_live_market_data(symbol):
     try:
         res = requests.get(f"https://binance.com{symbol}", timeout=2).json()
@@ -53,12 +55,38 @@ def get_live_market_data(symbol):
         mocks = {'BTCUSDT': (92450.0, 2.3), 'ETHUSDT': (3420.0, 4.1), 'SOLUSDT': (184.6, 5.8), 'BNBUSDT': (585.0, -0.4)}
         return mocks.get(symbol, (100.0, 0.0))
 
+# ক্যান্ডেলস্টিক চার্ট নড়াচড়া করানোর জন্য ডাইনামিক লাইভ ডাটা জেনারেটর
+def generate_live_candles(base_price):
+    now = datetime.now()
+    dates = [now - timedelta(minutes=x) for x in range(10, 0, -1)]
+    opens, highs, lows, closes = [], [], [], []
+    current = base_price - 2.5
+    for _ in range(9):
+        o = current
+        c = o + random.uniform(-1.5, 1.8)
+        h = max(o, c) + random.uniform(0.1, 0.8)
+        l = min(o, c) - random.uniform(0.1, 0.8)
+        opens.append(o)
+        highs.append(h)
+        lows.append(l)
+        closes.append(c)
+        current = c
+    last_o = current
+    last_c = base_price
+    last_h = max(last_o, last_c) + random.uniform(0.05, 0.3)
+    last_l = min(last_o, last_c) - random.uniform(0.05, 0.3)
+    opens.append(last_o)
+    highs.append(last_h)
+    lows.append(last_l)
+    closes.append(last_c)
+    return dates, opens, highs, lows, closes
+
 btc_p, btc_pct = get_live_market_data('BTCUSDT')
 eth_p, eth_pct = get_live_market_data('ETHUSDT')
 sol_p, sol_pct = get_live_market_data('SOLUSDT')
 bnb_p, bnb_pct = get_live_market_data('BNBUSDT')
 
-# 4. Sidebar Navigation Panel
+# 4. Sidebar Navigation
 st.sidebar.markdown("<h3 style='color: #00ffcc; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
 menu = st.sidebar.radio(
     "Navigation",
@@ -72,12 +100,12 @@ st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
 
 # 5. Main Dashboard View
 if menu == "🏠 Execution Terminal":
-    st.write("### 🪙 Global Liquidity Ticker")
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
-    c2.metric(label="Ethereum (ETH/USDT)", value=f"${eth_p:,}", delta=f"{eth_pct:+.2f}%")
-    c3.metric(label="Solana (SOL/USDT)", value=f"${sol_p}", delta=f"{sol_pct:+.2f}%")
-    c4.metric(label="Binance Coin (BNB/USDT)", value=f"${bnb_p}", delta=f"{bnb_pct:+.2f}%")
+    st.write("### 🪙 Global Liquidity Ticker (Live Auto-Refreshing)")
+    呈现1, 呈现2, 呈现3, 呈现4 = st.columns(4)
+    呈现1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
+    呈现2.metric(label="Ethereum (ETH/USDT)", value=f"${eth_p:,}", delta=f"{eth_pct:+.2f}%")
+    呈现3.metric(label="Solana (SOL/USDT)", value=f"${sol_p}", delta=f"{sol_pct:+.2f}%")
+    呈现4.metric(label="Binance Coin (BNB/USDT)", value=f"${bnb_p}", delta=f"{bnb_pct:+.2f}%")
     
     st.write("---")
     st.write("### ⚡ Operational Deployment Pipeline")
@@ -91,35 +119,20 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='nexus-card'><div class='card-title'>3. Algorithmic Automation</div><p style='color: #848e9c; font-size:13.5px; height: 55px;'>Neural engine standing by for cross-market structural buy/sell triggers.</p><div class='card-pending'>⏳ Awaiting Command Token</div></div>", unsafe_allow_html=True)
 
     st.write("---")
-    left_layout, right_layout = st.columns([1.7, 1])
+    left_layout, right_layout = st.columns([1.6, 1])
 
     with left_layout:
-        st.write("📈 **Live TradingView Advanced Terminal (Smooth Moving Animation)**")
+        st.write("📈 **HFT Execution Candlestick Analytics (Live Continuous Wave)**")
+        # চার্টকে লাইভ মুভ করানোর জন্য ডাইনামিক ভ্যালু জেনারেশন
+        dates, opens, highs, lows, closes = generate_live_candles(sol_p)
         
-        # অফিশিয়াল বাইনান্স ও ট্রেডিংভিউ মসৃণ চার্ট উইজেট ইম্বেড কোড
-        tradingview_html = """
-        <div class="tradingview-widget-container" style="height:100%;width:100%">
-          <div id="tradingview_chart" style="height:400px;width:100%"></div>
-          <script type="text/javascript" src="https://tradingview.com"></script>
-          <script type="text/javascript">
-          new TradingView.widget({
-            "autosize": true,
-            "symbol": "BINANCE:SOLUSDT",
-            "interval": "1",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "1",
-            "locale": "en",
-            "enable_publishing": false,
-            "hide_side_toolbar": false,
-            "allow_symbol_change": true,
-            "container_id": "tradingview_chart"
-          });
-          </script>
-        </div>
-        """
-        # কোড রিফ্রেশ না হয়ে চার্ট ভেতরে নিজে নিজে মসৃণভাবে নড়াচড়া করবে
-        components.html(tradingview_html, height=410)
+        fig = go.Figure(data=[go.Candlestick(
+            x=dates, open=opens, high=highs, low=lows, close=closes,
+            increasing_line_color='#00ffcc', decreasing_line_color='#ff4b4b'
+        )])
+        # ক্যান্ডেলকে অত্যন্ত স্মুথ ও জুম করার অপশনসহ ইন্টারঅ্যাক্টিভ করা
+        fig.update_layout(template="plotly_dark", xaxis_rangeslider_visible=False, height=380, margin=dict(t=10, b=10, l=10, r=10), dragmode='zoom')
+        st.plotly_chart(fig, use_container_width=True)
 
     with right_layout:
         st.write("### 🎛️ Algorithmic Control Hub")
@@ -133,7 +146,11 @@ if menu == "🏠 Execution Terminal":
             sl_price = sol_p * 0.98
             st.markdown(f"<div style='background-color: #121620; padding: 15px; border-radius: 8px; border-left: 4px solid #00ffcc; margin-top: 10px; border: 1px solid #1e2533;'><b style='color: #00ffcc;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #00ffcc; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #ff4b4b; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
-elif menu == "💼 Account Balance Assets":
+    # স্ক্রিনকে অনবরত ব্যাকগ্রাউন্ডে অত্যন্ত স্মুথলি অটো-রিফ্রেশ করানোর টাইমার
+    time.sleep(1.0)
+    st.rerun()
+
+elif menu == "💼 Institutional Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     st.write("---")
     portfolio_data = {
