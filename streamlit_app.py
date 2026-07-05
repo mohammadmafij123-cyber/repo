@@ -61,7 +61,7 @@ if menu == "📊 Trading Terminal":
     
     st.write("---")
 
-    # Layout: Left column (Chart & Gauge) | Right column (Order book & Automation)
+    # Layout: Left column (Chart) | Right column (Order book & Automation)
     left_layout, right_layout = st.columns([1.6, 1])
 
     with left_layout:
@@ -75,27 +75,8 @@ if menu == "📊 Trading Terminal":
             close=[sol_p-2, sol_p-3, sol_p-1, sol_p-2, sol_p-1, sol_p, sol_p],
             increasing_line_color='#02c076', decreasing_line_color='#f6465d'
         )])
-        fig.update_layout(title="SOLUSDT Live Candlestick Dynamics", template="plotly_dark", xaxis_rangeslider_visible=False, height=350, margin=dict(t=30, b=10, l=10, r=10))
+        fig.update_layout(title="SOLUSDT Live Candlestick Dynamics", template="plotly_dark", xaxis_rangeslider_visible=False, height=450, margin=dict(t=30, b=10, l=10, r=10))
         st.plotly_chart(fig, use_container_width=True)
-
-        # Corrected Technical Indicator Gauge Meter
-        gauge_fig = go.Figure(go.Indicator(
-            mode = "gauge+number",
-            value = 84,
-            domain = {'x':, 'y': [0, 1]},
-            title = {'text': "AI Market Signal Strength (Strong Buy Zone)", 'font': {'size': 14, 'color': '#848e9c'}},
-            gauge = {
-                'axis': {'range':, 'tickwidth': 1, 'tickcolor': "#848e9c"},
-                'bar': {'color': "#f0b90b"},
-                'steps': [
-                    {'range':, 'color': "#f6465d"},
-                    {'range':, 'color': "#24292e"},
-                    {'range':, 'color': "#02c076"}],
-                'threshold': {'line': {'color': "white", 'width': 4}, 'thickness': 0.75, 'value': 84}
-            }
-        ))
-        gauge_fig.update_layout(template="plotly_dark", height=200, margin=dict(t=30, b=10, l=10, r=10))
-        st.plotly_chart(gauge_fig, use_container_width=True)
 
     with right_layout:
         st.write("### 🎛️ Execution & Order Book")
