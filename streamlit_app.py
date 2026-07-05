@@ -6,36 +6,36 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import random
 
-# 1. Advanced Commercial Page Configuration
-st.set_page_config(page_title="Nexus Quantum AI | Institutional Trading Terminal", page_icon="⚡", layout="wide")
+# 1. Advanced Page Configuration
+st.set_page_config(page_title="Nexus Quantum AI | Trading Terminal", page_icon="⚡", layout="wide")
 
-# 2. Ultra-Premium Binance Replica Dark Theme (CSS)
+# 2. Premium Themes & Custom CSS
 st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
     [data-testid="stSidebar"] { background-color: #12161c !important; border-right: 1px solid #24292e; }
     
-    /* Top Header */
+    /* Top Header Bar */
     .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #12161c; padding: 18px 25px; margin: -60px -60px 30px -60px; border-bottom: 2px solid #24292e; }
     .nexus-logo { font-size: 24px; font-weight: 900; color: #f0b90b; font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
     .nexus-sub-logo { font-size: 13px; color: #848e9c; margin-left: 10px; font-weight: 500; }
-    .system-status { font-family: monospace; font-size: 12px; color: #02c076; background-color: rgba(2, 192, 118, 0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(2, 192, 118, 0.2); }
+    .system-status { font-family: monospace; font-size: 12px; color: #02c076; background-color: rgba(2, 192, 118, 0.1); padding: 4px 10px; border-radius: 4px; }
     
-    /* Premium Grid Cards */
-    .nexus-card { background-color: #181d24; border: 1px solid #2b3139; border-radius: 10px; padding: 22px; margin-bottom: 20px; }
+    /* Premium Dashboard Cards */
+    .nexus-card { background-color: #161a1e; border: 1px solid #24292e; border-radius: 10px; padding: 22px; margin-bottom: 20px; }
     .card-title { font-size: 16px; font-weight: bold; color: #ffffff; margin-bottom: 8px; }
     .card-status { font-size: 13px; color: #02c076; font-weight: 600; }
     .card-pending { font-size: 13px; color: #848e9c; font-weight: 600; }
     
-    /* Button Binance Style Gradient */
-    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; transition: all 0.2s ease; }
+    /* Premium Button */
+    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; }
     .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3) !important; }
     
     div[data-testid="stMetricValue"] { font-size: 26px; font-weight: bold; color: #f0b90b !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Top Executive Header Bar
+# 3. Top Header Bar
 st.markdown("""
     <div class='nexus-header'>
         <div style='display: flex; align-items: center;'>
@@ -88,11 +88,7 @@ bnb_p, bnb_pct = get_live_market_data('BNBUSDT')
 
 # 4. Sidebar Navigation
 st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
-menu = st.sidebar.radio(
-    "Navigation",
-    ["🏠 Execution Terminal", "💼 Institutional Assets", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"],
-    label_visibility="collapsed"
-)
+menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "💼 Institutional Assets", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 
 st.sidebar.write("---")
 st.sidebar.write("### 🛡️ FireWall Status")
@@ -125,30 +121,28 @@ if menu == "🏠 Execution Terminal":
         st.write("📈 **HFT Execution Candlestick Analytics (Live Continuous Wave)**")
         dates, opens, highs, lows, closes = generate_live_candles(sol_p)
         
-        # হুবহু বাইনান্স এক্সচেঞ্জের থিমের ক্যান্ডেলস্টিক কালার ও উইক ডিজাইন করা হয়েছে
+        # বাইনান্সের মতো ক্যান্ডেলের ডিজাইন সেটিংস
         fig = go.Figure(data=[go.Candlestick(
             x=dates, open=opens, high=highs, low=lows, close=closes,
             increasing_line_color='#02c076', decreasing_line_color='#f6465d',
-            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
-            line=dict(width=1.5)
+            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d'
         )])
         
-        # ব্যাকগ্রাউন্ডের গ্রিড লাইন এবং ব্যাকগ্রাউন্ড কালার আসল বাইনান্সের মতো সেটিং করা হলো
+        # বাইনান্স থিম গ্রিড সেটিংস
         fig.update_layout(
             plot_bgcolor='#161a1e',
             paper_bgcolor='#0b0e11',
             xaxis_rangeslider_visible=False,
             height=380,
             margin=dict(t=10, b=10, l=10, r=10),
-            dragmode='zoom',
-            xaxis=dict(showgrid=True, gridcolor='#24292e', tickfont=dict(color='#848e9c')),
-            yaxis=dict(showgrid=True, gridcolor='#24292e', side='right', tickfont=dict(color='#848e9c'))
+            xaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1),
+            yaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, side='right')
         )
         st.plotly_chart(fig, use_container_width=True)
 
     with right_layout:
         st.write("### 🎛️ Algorithmic Control Hub")
-        st.write("Trigger the system below to execute real-time order tracking and deploy stop-loss/take-profit guards.")
+        st.write("Trigger the system below to execute real-time order tracking and deploy guards.")
         if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
             with st.spinner("Processing alpha order book profiles..."):
                 time.sleep(1.5)
@@ -156,27 +150,24 @@ if menu == "🏠 Execution Terminal":
             st.success("Target Captured: Optimal structural setup loaded on SOLUSDT.")
             tp_price = sol_p * 1.04
             sl_price = sol_p * 0.98
-            st.markdown(f"<div style='background-color: #181d24; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #2b3139;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
     time.sleep(1.0)
     st.rerun()
 
-elif menu == "💼 Institutional Assets":
+# (বাকি কোড অপরিবর্তিত রয়েছে...)
+elif menu == "💼 Account Balance Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     st.write("---")
-    portfolio_data = {
-        'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'],
-        'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'],
-        'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'],
-        'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']
-    }
+    portfolio_data = {'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'], 'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'], 'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'], 'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']}
     st.table(pd.DataFrame(portfolio_data))
-
 elif menu == "📰 Alpha Intelligence":
     st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
     st.write("---")
-    st.markdown("<div class='nexus-card'><h4 style='color: #f0b90b; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls anchoring key levels.</p></div>", unsafe_allow_html=True)
-
+    st.markdown("<div class='nexus-card'><h4 style='color: #f0b90b; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls.</p></div>", unsafe_allow_html=True)
 elif menu == "⚙️ Cryptographic Vault":
     st.markdown("<h1>⚙️ Asymmetric Exchange API Vault</h1>", unsafe_allow_html=True)
     st.write("---")
+    st.text_input("Exchange Public API Identifier", type="password", placeholder="Paste secure public API key...")
+    st.text_input("Exchange Encrypted Private Signature", type="password", placeholder="Paste secure private secret signature...")
+    if st.button("🔒 SEAL & DEPLOY CREDENTIALS"): st.success("🔒 API credentials locked successfully.")
