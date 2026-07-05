@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import random
 
-# 1. Advanced Page Configuration
+# 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
 # 2. Institutional Themes & Custom CSS
@@ -151,7 +151,7 @@ if menu == "🏠 Execution Terminal":
     time.sleep(60.0)
     st.rerun()
 
-# 💼 প্রথম লাইনের ভুলটি (as st) ফিক্সড করে এই পেজটি রি-রাইট করা হলো
+# 💼 বাড়তি ঝামেলার চার্ট ও টেবিল কেটে বাদ দিয়ে শুধু ৪টি প্রফেশনাল ক্লিন কার্ড ফিক্সড রাখা হলো
 elif menu == "💼 Balance & PNL Tracker":
     st.markdown("<h1 style='color: #ffffff;'>💼 Binance Live Capital & PNL Ledger</h1>", unsafe_allow_html=True)
     st.write("Real-time portfolio metrics pulled directly via secure API handshake protocol.")
