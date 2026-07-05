@@ -33,7 +33,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Top Header Bar
+# 3. Top Executive Header Bar
 st.markdown("""
     <div class='nexus-header'>
         <div style='display: flex; align-items: center;'>
@@ -58,7 +58,7 @@ eth_p, eth_pct = get_live_market_data('ETHUSDT')
 sol_p, sol_pct = get_live_market_data('SOLUSDT')
 bnb_p, bnb_pct = get_live_market_data('BNBUSDT')
 
-# 4. Sidebar Navigation
+# 4. Sidebar Navigation Panel
 st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
 menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "💼 Institutional Assets", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 
@@ -68,7 +68,7 @@ st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
 
 # 5. Main Dashboard View
 if menu == "🏠 Execution Terminal":
-    st.write("### 🪙 Global Liquidity Ticker (Live Auto-Refreshing)")
+    st.write("### 🪙 Global Liquidity Ticker")
     呈现1, 呈现2, 呈现3, 呈现4 = st.columns(4)
     呈现1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
     呈现2.metric(label="Ethereum (ETH/USDT)", value=f"${eth_p:,}", delta=f"{eth_pct:+.2f}%")
@@ -113,7 +113,6 @@ if menu == "🏠 Execution Terminal":
                 borderDownColor: '#f6465d', wickUpColor: '#02c076', wickDownColor: '#f6465d'
             }});
 
-            // ডাইনামিক হিস্টোরিক্যাল বেস ডাটা জেনারেশন
             let basePrice = {sol_p};
             let data = [];
             let timeStamp = Math.floor(Date.now() / 1000) - 30 * 60;
@@ -132,7 +131,6 @@ if menu == "🏠 Execution Terminal":
             }}
             candleSeries.setData(data);
 
-            // লাইভ অ্যানিমেশন মেকানিজম (প্রতি ১ সেকেন্ডে শেষের ক্যান্ডেলটি মসৃণভাবে কাঁপবে)
             let lastCandle = data[data.length - 1];
             setInterval(() => {{
                 let liveChange = (Math.random() - 0.5) * 0.4;
@@ -143,7 +141,6 @@ if menu == "🏠 Execution Terminal":
             }}, 1000);
         </script>
         """
-        # স্ক্রিন রিফ্রেশ না হয়ে ভেতরের ক্যান্ডেলটি শুধু রিয়াল-টাইম মুভ করবে
         components.html(binance_chart_html, height=390)
 
     with right_layout:
@@ -156,11 +153,19 @@ if menu == "🏠 Execution Terminal":
             st.success("Target Captured: Optimal structural setup loaded on SOLUSDT.")
             tp_price = sol_p * 1.04
             sl_price = sol_p * 0.98
-            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #ff4b4b; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
-elif menu == "💼 Account Balance Assets":
+elif menu == "💼 Institutional Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     st.write("---")
-    portfolio_data = {'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'], 'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'], 'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'], 'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']}
+    portfolio_data = {
+        'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'],
+        'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'],
+        'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'],
+        'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']
+    }
     st.table(pd.DataFrame(portfolio_data))
+
 elif menu == "📰 Alpha Intelligence":
+    st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
+    st.write("---")
