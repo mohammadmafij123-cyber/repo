@@ -58,7 +58,6 @@ def get_live_market_data(symbol):
 # ক্যান্ডেলস্টিক চার্ট নড়াচড়া করানোর জন্য ডাইনামিক লাইভ ডাটা জেনারেটর
 def generate_live_candles(base_price):
     now = datetime.now()
-    # বাইনান্সের আসল ক্যানভাস ভাইব দেওয়ার জন্য ক্যান্ডেল সংখ্যা বাড়িয়ে ৬০টি করা হলো
     dates = [now - timedelta(minutes=x) for x in range(60, 0, -1)]
     opens, highs, lows, closes = [], [], [], []
     current = base_price - 8.5
@@ -72,8 +71,6 @@ def generate_live_candles(base_price):
         lows.append(l)
         closes.append(c)
         current = c
-        
-    # সর্বশেষ লাইভ ক্যান্ডেল (যা প্রতি ১ সেকেন্ডে ধীরেসুস্থে কাঁপবে)
     last_o = current
     last_c = base_price + random.uniform(-0.3, 0.3)
     last_h = max(last_o, last_c) + random.uniform(0.05, 0.3)
@@ -129,17 +126,16 @@ if menu == "🏠 Execution Terminal":
             x=dates, open=opens, high=highs, low=lows, close=closes,
             increasing_line_color='#02c076', decreasing_line_color='#f6465d',
             increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
-            line=dict(width=1.0) # সুতো চিকন করা হলো
+            line=dict(width=1.0)
         )])
         
-        # চার্টের ক্যানভাস পুরো বাইনান্স থিমে সাজানো হলো (ক্যান্ডেল অটোমেটিক চিকন ও নিখুঁত দেখাবে)
         fig.update_layout(
             plot_bgcolor='#161a1e',
             paper_bgcolor='#0b0e11',
             xaxis_rangeslider_visible=False,
             height=380,
             margin=dict(t=10, b=10, l=10, r=10),
-            xaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, type='date', range=[dates[-30], dates[-1]]), # স্ক্রিনে একবারে মাত্র ৩০টি ক্যান্ডেল দেখাবে যাতে চিকন ও সুন্দর লাগে
+            xaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, type='date', range=[dates[-30], dates[-1]]),
             yaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, side='right')
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -156,17 +152,28 @@ if menu == "🏠 Execution Terminal":
             sl_price = sol_p * 0.98
             st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
-    # পেজ রিফ্রেশ না হয়ে ভেতরের ডাটা ট্র্যাকার রানিং রাখার লাইভ পালস টাইমার
     time.sleep(1.0)
     st.rerun()
 
-elif menu == "💼 Account Balance Assets":
+elif menu == "💼 Institutional Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     st.write("---")
-    portfolio_data = {'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'], 'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'], 'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'], 'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']}
+    portfolio_data = {
+        'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'], 
+        'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'], 
+        'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'], 
+        'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']
+    }
     st.table(pd.DataFrame(portfolio_data))
+
 elif menu == "📰 Alpha Intelligence":
     st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
     st.write("---")
     st.markdown("<div class='nexus-card'><h4 style='color: #f0b90b; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls.</p></div>", unsafe_allow_html=True)
+
 elif menu == "⚙️ Cryptographic Vault":
+    st.markdown("<h1>⚙️ Asymmetric Exchange API Vault</h1>", unsafe_allow_html=True)
+    st.write("---")
+    st.text_input("Exchange Public API Identifier", type="password", placeholder="Paste secure public API key...")
+    st.text_input("Exchange Encrypted Private Signature", type="password", placeholder="Paste secure private secret signature...")
+    if st.button("🔒 SEAL & DEPLOY CREDENTIALS"): 
