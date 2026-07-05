@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit st
 import time
 import requests
 import pandas as pd
@@ -128,7 +128,7 @@ if menu == "🏠 Execution Terminal":
             st.success("Target Captured: Optimal structural setup loaded on SOLUSDT.")
             tp_price = sol_p * (1 + (0.02 * rr_ratio))
             sl_price = sol_p * 0.98
-            st.markdown(f"<div style='background-color: #12161c; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Asset Pair: SOLUSDT<br>• Execution Target Target: <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Execution Protection SL: <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: #12161c; padding: 15px; border-radius: 6px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Asset Pair: SOLUSDT<br>• Execution Target Target: <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Execution Protection SL: <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     st.write("---")
@@ -151,10 +151,11 @@ if menu == "🏠 Execution Terminal":
     time.sleep(60.0)
     st.rerun()
 
-# 💼 সাব-কলাম লেআউট পুরোপুরি বাদ দিয়ে ফুল-উইথ সোজা লাইনে ফিক্সড করা হলো
+# 💼 এখানে জটিল চার্ট-টেবিল সব বাদ দিয়ে শুধু ৪টি সুন্দর ক্লিন কার্ড রাখা হলো
 elif menu == "💼 Balance & PNL Tracker":
     st.markdown("<h1 style='color: #ffffff;'>💼 Binance Live Capital & PNL Ledger</h1>", unsafe_allow_html=True)
-    st.write("Real-time portfolio metrics, equity growth curve, and cash flow statement pulled directly via API handshake.")
+    st.write("Real-time portfolio metrics pulled directly via secure API handshake protocol.")
     st.write("---")
     
+    st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
     p_col1, p_col2, p_col3, p_col4 = st.columns(4)
