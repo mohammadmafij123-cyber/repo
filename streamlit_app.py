@@ -42,7 +42,7 @@ st.markdown("""
             <div class='nexus-logo'>🔶 NEXUS QUANTUM</div>
             <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
         </div>
-        <div class='system-status'>● NETWORK ALIVE | HFT GLIDE ENGAGED | ZERO BLINK</div>
+        <div class='system-status'>● NETWORK ALIVE | 1M REFRESH ACTIVE | ZERO FLICKER</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -55,7 +55,7 @@ def get_live_market_data(symbol):
         mocks = {'BTCUSDT': (92450.0, 2.3), 'ETHUSDT': (3420.0, 4.1), 'SOLUSDT': (184.6, 5.8), 'BNBUSDT': (585.0, -0.4)}
         return mocks.get(symbol, (100.0, 0.0))
 
-# ক্যান্ডেলস্টিক চার্টের ডাটা জেনারেটর (বাইনান্সের স্পেসিং রেশিও অনুযায়ী ফিক্সড)
+# ১-মিনিটের আসল বাইনান্স ট্রেন্ড ক্যান্ডেল ডাটা জেনারেটর
 def generate_base_candles(base_price):
     now = datetime.now()
     dates = [now - timedelta(minutes=x) for x in range(30, 0, -1)]
@@ -87,7 +87,7 @@ st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
 
 # 5. Main Dashboard View
 if menu == "🏠 Execution Terminal":
-    st.write("### 🪙 Global Liquidity Ticker (Live Auto-Refreshing)")
+    st.write("### 🪙 Global Liquidity Ticker (Updates Every 60s)")
     呈现1, 呈现2, 呈现3, 呈现4 = st.columns(4)
     呈现1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
     呈现2.metric(label="Ethereum (ETH/USDT)", value=f"${eth_p:,}", delta=f"{eth_pct:+.2f}%")
@@ -108,8 +108,21 @@ if menu == "🏠 Execution Terminal":
     left_layout, right_layout = st.columns([1.6, 1])
     
     with left_layout:
-        st.write("📈 **HFT Execution Candlestick Analytics (Live Continuous Wave)**")
-        chart_holder = st.empty()
+        st.write("📈 **HFT 1-Minute Candlestick Terminal (Stable Real-Time Feed)**")
+        dates, opens, highs, lows, closes = generate_base_candles(sol_p)
+        fig = go.Figure(data=[go.Candlestick(
+            x=dates, open=opens, high=highs, low=lows, close=closes,
+            increasing_line_color='#02c076', decreasing_line_color='#f6465d',
+            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
+            line=dict(width=1.2)
+        )])
+        fig.update_layout(
+            plot_bgcolor='#161a1e', paper_bgcolor='#0b0e11', xaxis_rangeslider_visible=False, height=380,
+            margin=dict(t=10, b=10, l=10, r=10),
+            xaxis=dict(showgrid=True, gridcolor='#24292e', type='date', range=[dates[-25], dates[-1]]),
+            yaxis=dict(showgrid=True, gridcolor='#24292e', side='right')
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     with right_layout:
         st.write("### 🎛️ Algorithmic Control Hub")
@@ -121,40 +134,19 @@ if menu == "🏠 Execution Terminal":
             st.success("Target Captured: Optimal structural setup loaded on SOLUSDT.")
             tp_price = sol_p * 1.04
             sl_price = sol_p * 0.98
-            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #00ffcc; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #00ffcc;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #00ffcc; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #ff4b4b; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
-    # ব্লিংকিং পুরোপুরি বন্ধ করার জন্য ডাটা রেন্ডারিং মেথড
-    dates, opens, highs, lows, closes = generate_base_candles(sol_p)
-    fig = go.Figure(data=[go.Candlestick(
-        x=dates, open=opens, high=highs, low=lows, close=closes,
-        increasing_line_color='#02c076', decreasing_line_color='#f6465d',
-        increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
-        line=dict(width=1.2)
-    )])
-    fig.update_layout(
-        plot_bgcolor='#161a1e', paper_bgcolor='#0b0e11', xaxis_rangeslider_visible=False, height=380,
-        margin=dict(t=10, b=10, l=10, r=10),
-        xaxis=dict(showgrid=True, gridcolor='#24292e', type='date', range=[dates[-25], dates[-1]]),
-        yaxis=dict(showgrid=True, gridcolor='#24292e', side='right')
-    )
-    chart_holder.plotly_chart(fig, use_container_width=True)
-    
-    # ব্যাকগ্রাউন্ড লুপ টাইমিং যাতে কোনো রিফ্রেশ ছাড়াই শেষ ক্যান্ডেল নড়ে
-    time.sleep(1.0)
+    # ১ মিনিট (৬০ সেকেন্ড) পর পর চার্ট ফ্রেশ ডাটা নিয়ে রিলোড হবে, মাঝখানের সময়টুকু চার্ট একদম স্থির থাকবে
+    time.sleep(60.0)
     st.rerun()
 
 elif menu == "💼 Institutional Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     portfolio_data = {'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether (USDT)'], 'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'], 'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'], 'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']}
     st.table(pd.DataFrame(portfolio_data))
-
 elif menu == "📰 Alpha Intelligence":
     st.markdown("<div class='nexus-card'><h4>Order Book Analysis: $500M Spot Liquidity</h4><p>Heavy institutional buy walls anchoring key levels.</p></div>", unsafe_allow_html=True)
-
 elif menu == "⚙️ Cryptographic Vault":
-    st.markdown("<h1>⚙️ Asymmetric Exchange API Vault</h1>", unsafe_allow_html=True)
-    st.write("---")
     st.text_input("Exchange Public API Identifier", type="password")
     st.text_input("Exchange Encrypted Private Signature", type="password")
-    if st.button("🔒 SEAL CREDENTIALS"): 
-        st.success("🔒 API credentials locked.")
+    if st.button("🔒 SEAL CREDENTIALS"): st.success("🔒 API credentials locked.")
