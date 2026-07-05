@@ -2,12 +2,14 @@ import streamlit as st
 import time
 import requests
 import pandas as pd
-import streamlit.components.v1 as components
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+import random
 
-# 1. Advanced Institutional Page Configuration
+# 1. Advanced Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Trading Terminal", page_icon="⚡", layout="wide")
 
-# 2. Ultra-Premium Themes & Custom CSS
+# 2. Premium Themes & Custom CSS
 st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
@@ -33,14 +35,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Top Executive Header Bar
+# 3. Top Header Bar
 st.markdown("""
     <div class='nexus-header'>
         <div style='display: flex; align-items: center;'>
             <div class='nexus-logo'>🔶 NEXUS QUANTUM</div>
             <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
         </div>
-        <div class='system-status'>● ENGINE ALIVE | FEED: BINANCE REAL-TIME | SMOOTH ANIMATION</div>
+        <div class='system-status'>● NETWORK ALIVE | LATENCY: 12ms | LIVE UPDATING</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -53,12 +55,41 @@ def get_live_market_data(symbol):
         mocks = {'BTCUSDT': (92450.0, 2.3), 'ETHUSDT': (3420.0, 4.1), 'SOLUSDT': (184.6, 5.8), 'BNBUSDT': (585.0, -0.4)}
         return mocks.get(symbol, (100.0, 0.0))
 
+# ক্যান্ডেলস্টিক চার্ট নড়াচড়া করানোর জন্য ডাইনামিক লাইভ ডাটা জেনারেটর
+def generate_live_candles(base_price):
+    now = datetime.now()
+    # বাইনান্সের আসল ক্যানভাস ভাইব দেওয়ার জন্য ক্যান্ডেল সংখ্যা বাড়িয়ে ৬০টি করা হলো
+    dates = [now - timedelta(minutes=x) for x in range(60, 0, -1)]
+    opens, highs, lows, closes = [], [], [], []
+    current = base_price - 8.5
+    for _ in range(59):
+        o = current
+        c = o + random.uniform(-2.5, 2.8)
+        h = max(o, c) + random.uniform(0.1, 1.5)
+        l = min(o, c) - random.uniform(0.1, 1.5)
+        opens.append(o)
+        highs.append(h)
+        lows.append(l)
+        closes.append(c)
+        current = c
+        
+    # সর্বশেষ লাইভ ক্যান্ডেল (যা প্রতি ১ সেকেন্ডে ধীরেসুস্থে কাঁপবে)
+    last_o = current
+    last_c = base_price + random.uniform(-0.3, 0.3)
+    last_h = max(last_o, last_c) + random.uniform(0.05, 0.3)
+    last_l = min(last_o, last_c) - random.uniform(0.05, 0.3)
+    opens.append(last_o)
+    highs.append(last_h)
+    lows.append(last_l)
+    closes.append(last_c)
+    return dates, opens, highs, lows, closes
+
 btc_p, btc_pct = get_live_market_data('BTCUSDT')
 eth_p, eth_pct = get_live_market_data('ETHUSDT')
 sol_p, sol_pct = get_live_market_data('SOLUSDT')
 bnb_p, bnb_pct = get_live_market_data('BNBUSDT')
 
-# 4. Sidebar Navigation Panel
+# 4. Sidebar Navigation
 st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
 menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "💼 Institutional Assets", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 
@@ -68,7 +99,7 @@ st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
 
 # 5. Main Dashboard View
 if menu == "🏠 Execution Terminal":
-    st.write("### 🪙 Global Liquidity Ticker")
+    st.write("### 🪙 Global Liquidity Ticker (Live Auto-Refreshing)")
     呈现1, 呈现2, 呈现3, 呈现4 = st.columns(4)
     呈现1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
     呈现2.metric(label="Ethereum (ETH/USDT)", value=f"${eth_p:,}", delta=f"{eth_pct:+.2f}%")
@@ -90,58 +121,28 @@ if menu == "🏠 Execution Terminal":
     left_layout, right_layout = st.columns([1.6, 1])
 
     with left_layout:
-        st.write("📈 **Binance Pro Advanced Feed (Smooth Live Pulse Motion)**")
+        st.write("📈 **HFT Execution Candlestick Analytics (Live Continuous Pulse)**")
+        dates, opens, highs, lows, closes = generate_live_candles(sol_p)
         
-        # বিশ্বমানের লাইটওয়েট ট্রেডিংভিউ চার্ট স্ক্রিপ্ট ইম্বেড (যা পুরো বাইনান্স এক্সচেঞ্জে ব্যবহৃত হয়)
-        binance_chart_html = f"""
-        <div id="chart-container" style="width: 100%; height: 380px; background-color: #161a1e; border-radius: 6px; border: 1px solid #24292e; overflow: hidden;"></div>
-        <script src="https://unpkg.com"></script>
-        <script>
-            const container = document.getElementById('chart-container');
-            const chart = LightweightCharts.createChart(container, {{
-                width: container.clientWidth,
-                height: 380,
-                layout: {{ backgroundColor: '#161a1e', textColor: '#848e9c' }},
-                grid: {{ vertLines: {{ color: '#24292e' }}, horzLines: {{ color: '#24292e' }} }},
-                crosshair: {{ mode: LightweightCharts.CrosshairMode.Normal }},
-                priceScale: {{ position: 'right', borderVisible: false }},
-                timeScale: {{ borderVisible: false, timeVisible: true, secondsVisible: false }}
-            }});
-
-            const candleSeries = chart.addCandlestickSeries({{
-                upColor: '#02c076', downColor: '#f6465d', borderUpColor: '#02c076',
-                borderDownColor: '#f6465d', wickUpColor: '#02c076', wickDownColor: '#f6465d'
-            }});
-
-            let basePrice = {sol_p};
-            let data = [];
-            let timeStamp = Math.floor(Date.now() / 1000) - 30 * 60;
-
-            for (let i = 0; i < 30; i++) {{
-                let open = basePrice + (Math.random() - 0.5) * 3;
-                let close = open + (Math.random() - 0.5) * 2;
-                data.push({{
-                    time: timeStamp + i * 60,
-                    open: open,
-                    high: Math.max(open, close) + Math.random(),
-                    low: Math.min(open, close) - Math.random(),
-                    close: close
-                }});
-                basePrice = close;
-            }}
-            candleSeries.setData(data);
-
-            let lastCandle = data[data.length - 1];
-            setInterval(() => {{
-                let liveChange = (Math.random() - 0.5) * 0.4;
-                lastCandle.close += liveChange;
-                if (lastCandle.close > lastCandle.high) lastCandle.high = lastCandle.close;
-                if (lastCandle.close < lastCandle.low) lastCandle.low = lastCandle.close;
-                candleSeries.update(lastCandle);
-            }}, 1000);
-        </script>
-        """
-        components.html(binance_chart_html, height=390)
+        # বাইনান্সের মতো নিখুঁত চার্ট তৈরি করার মূল প্লটলি লজিক
+        fig = go.Figure(data=[go.Candlestick(
+            x=dates, open=opens, high=highs, low=lows, close=closes,
+            increasing_line_color='#02c076', decreasing_line_color='#f6465d',
+            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
+            line=dict(width=1.0) # সুতো চিকন করা হলো
+        )])
+        
+        # চার্টের ক্যানভাস পুরো বাইনান্স থিমে সাজানো হলো (ক্যান্ডেল অটোমেটিক চিকন ও নিখুঁত দেখাবে)
+        fig.update_layout(
+            plot_bgcolor='#161a1e',
+            paper_bgcolor='#0b0e11',
+            xaxis_rangeslider_visible=False,
+            height=380,
+            margin=dict(t=10, b=10, l=10, r=10),
+            xaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, type='date', range=[dates[-30], dates[-1]]), # স্ক্রিনে একবারে মাত্র ৩০টি ক্যান্ডেল দেখাবে যাতে চিকন ও সুন্দর লাগে
+            yaxis=dict(showgrid=True, gridcolor='#24292e', gridwidth=1, side='right')
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     with right_layout:
         st.write("### 🎛️ Algorithmic Control Hub")
@@ -155,17 +156,17 @@ if menu == "🏠 Execution Terminal":
             sl_price = sol_p * 0.98
             st.markdown(f"<div style='background-color: #161a1e; padding: 15px; border-radius: 8px; border-left: 4px solid #02c076; margin-top: 10px; border: 1px solid #24292e;'><b style='color: #02c076;'>🟢 STRATEGIC ORDER OPENED</b><br><br>• Target Market: SOLUSDT<br>• Base Entry Rate: ${sol_p:.2f}<br>• Take-Profit Target (+4.0%): <span style='color: #02c076; font-weight:bold;'>${tp_price:.2f}</span><br>• Stop-Loss Shield (-2.0%): <span style='color: #f6465d; font-weight:bold;'>${sl_price:.2f}</span></div>", unsafe_allow_html=True)
 
-elif menu == "💼 Institutional Assets":
+    # পেজ রিফ্রেশ না হয়ে ভেতরের ডাটা ট্র্যাকার রানিং রাখার লাইভ পালস টাইমার
+    time.sleep(1.0)
+    st.rerun()
+
+elif menu == "💼 Account Balance Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     st.write("---")
-    portfolio_data = {
-        'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'],
-        'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'],
-        'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'],
-        'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']
-    }
+    portfolio_data = {'Digital Asset': ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)', 'Tether Stablecoin (USDT)'], 'Allocated Volume': ['0.00015', '0.0024', '0.054', '15.00'], 'Equity Evaluation (USD)': [f"${btc_p*0.00015:.2f}", f"${eth_p*0.0024:.2f}", f"${sol_p*0.054:.2f}", '$15.00'], 'Delta Performance': [f'{btc_pct:+.2f}%', f'{eth_pct:+.2f}%', f'{sol_pct:+.2f}%', '0.00% ⚡']}
     st.table(pd.DataFrame(portfolio_data))
-
 elif menu == "📰 Alpha Intelligence":
     st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
     st.write("---")
+    st.markdown("<div class='nexus-card'><h4 style='color: #f0b90b; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls.</p></div>", unsafe_allow_html=True)
+elif menu == "⚙️ Cryptographic Vault":
