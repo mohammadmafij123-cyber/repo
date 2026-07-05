@@ -40,7 +40,7 @@ st.markdown("""
             <div class='nexus-logo'>🔶 NEXUS QUANTUM</div>
             <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
         </div>
-        <div class='system-status'>● ENGINE ALIVE | FEED: LIVE BINANCE PORTFOLIO CONNECTED</div>
+        <div class='system-status'>● ENGINE ALIVE | FEED: LIVE BINANCE PORTER CONNECTED</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -58,9 +58,9 @@ eth_p, eth_pct = get_live_market_data('ETHUSDT')
 sol_p, sol_pct = get_live_market_data('SOLUSDT')
 bnb_p, bnb_pct = get_live_market_data('BNBUSDT')
 
-# 4. Sidebar Navigation
+# 4. Sidebar Navigation (ন্যাভিগেশন মেনু সহজ করা হলো)
 st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
-menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "💼 Balance & PNL Tracker", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
+menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "📰 Alpha Intelligence", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 st.sidebar.write("---")
 st.sidebar.write("### 🛡️ FireWall Status")
 st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
@@ -151,11 +151,9 @@ if menu == "🏠 Execution Terminal":
     time.sleep(60.0)
     st.rerun()
 
-# 💼 বাড়তি ঝামেলার চার্ট ও টেবিল কেটে বাদ দিয়ে শুধু ৪টি প্রফেশনাল ক্লিন কার্ড ফিক্সড রাখা হলো
-elif menu == "💼 Balance & PNL Tracker":
-    st.markdown("<h1 style='color: #ffffff;'>💼 Binance Live Capital & PNL Ledger</h1>", unsafe_allow_html=True)
-    st.write("Real-time portfolio metrics pulled directly via secure API handshake protocol.")
+elif menu == "📰 Alpha Intelligence":
+    st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
     st.write("---")
-    
-    st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-    p_col1, p_col2, p_col3, p_col4 = st.columns(4)
+    st.markdown("<div class='nexus-card'><h4 style='color: #f0b90b; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated</h4><p style='color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls anchoring key levels.</p></div>", unsafe_allow_html=True)
+
+elif menu == "⚙️ Cryptographic Vault":
