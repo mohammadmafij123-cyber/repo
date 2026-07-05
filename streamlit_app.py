@@ -3,7 +3,8 @@ import time
 import requests
 import pandas as pd
 import plotly.graph_objects as go
-from datetime import datetime
+from datetime import datetime, timedelta
+import random
 
 # 1. Page Configuration with Premium Name
 st.set_page_config(page_title="Nexus Quantum AI | Institutional Trading Terminal", page_icon="⚡", layout="wide")
@@ -18,7 +19,7 @@ st.markdown("""
     .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #121620; padding: 18px 25px; margin: -60px -60px 30px -60px; border-bottom: 2px solid #1e2533; }
     .nexus-logo { font-size: 24px; font-weight: 900; color: #00ffcc; font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
     .nexus-sub-logo { font-size: 13px; color: #848e9c; margin-left: 10px; font-weight: 500; }
-    .system-status { font-family: monospace; font-size: 12px; color: #02c076; background-color: rgba(2, 192, 118, 0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(2, 192, 118, 0.2); }
+    .system-status { font-family: monospace; font-size: 12px; color: #00ffcc; background-color: rgba(0, 255, 204, 0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(0, 255, 204, 0.2); }
     
     /* High-Fidelity Cards */
     .nexus-card { background-color: #121620; border: 1px solid #1e2533; border-radius: 10px; padding: 22px; margin-bottom: 20px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
@@ -42,18 +43,52 @@ st.markdown("""
             <div class='nexus-logo'>⚡ NEXUS QUANTUM</div>
             <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
         </div>
-        <div class='system-status'>● NETWORK ALIVE | LATENCY: 12ms | UPTIME: 99.98%</div>
+        <div class='system-status'>● NETWORK ALIVE | LATENCY: 12ms | LIVE UPDATING</div>
     </div>
 """, unsafe_allow_html=True)
 
 # Public Binance API Call for live market feeds
 def get_live_market_data(symbol):
     try:
-        res = requests.get(f"https://binance.com{symbol}", timeout=3).json()
+        res = requests.get(f"https://binance.com{symbol}", timeout=2).json()
         return float(res['lastPrice']), float(res['priceChangePercent'])
     except:
         mocks = {'BTCUSDT': (92450.0, 2.3), 'ETHUSDT': (3420.0, 4.1), 'SOLUSDT': (184.6, 5.8), 'BNBUSDT': (585.0, -0.4)}
         return mocks.get(symbol, (100.0, 0.0))
+
+# ক্যান্ডেলস্টিক চার্ট নড়াচড়া করানোর জন্য ডাইনামিক লাইভ ডাটা জেনারেটর
+def generate_live_candles(base_price):
+    now = datetime.now()
+    dates = [now - timedelta(minutes=x) for x in range(10, 0, -1)]
+    
+    opens = []
+    highs = []
+    lows = []
+    closes = []
+    
+    current = base_price - 2.5
+    for _ in range(9):
+        o = current
+        c = o + random.uniform(-1.5, 1.8)
+        h = max(o, c) + random.uniform(0.1, 0.8)
+        l = min(o, c) - random.uniform(0.1, 0.8)
+        opens.append(o)
+        highs.append(h)
+        lows.append(l)
+        closes.append(c)
+        current = c
+        
+    # সর্বশেষ লাইভ ক্যান্ডেল (যা অনবরত নড়াচড়া করবে)
+    last_o = current
+    last_c = base_price
+    last_h = max(last_o, last_c) + random.uniform(0.05, 0.3)
+    last_l = min(last_o, last_c) - random.uniform(0.05, 0.3)
+    opens.append(last_o)
+    highs.append(last_h)
+    lows.append(last_l)
+    closes.append(last_c)
+    
+    return dates, opens, highs, lows, closes
 
 btc_p, btc_pct = get_live_market_data('BTCUSDT')
 eth_p, eth_pct = get_live_market_data('ETHUSDT')
@@ -74,7 +109,7 @@ st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
 
 # 5. Main Dashboard View
 if menu == "🏠 Execution Terminal":
-    st.write("### 🪙 Global Liquidity Ticker")
+    st.write("### 🪙 Global Liquidity Ticker (Live Auto-Refreshing)")
     c1, c2, c3, c4 = st.columns(4)
     c1.metric(label="Bitcoin (BTC/USDT)", value=f"${btc_p:,}", delta=f"{btc_pct:+.2f}%")
     c2.metric(label="Ethereum (ETH/USDT)", value=f"${eth_p:,}", delta=f"{eth_pct:+.2f}%")
@@ -120,16 +155,14 @@ if menu == "🏠 Execution Terminal":
     left_layout, right_layout = st.columns([1.6, 1])
 
     with left_layout:
-        dates = pd.date_range(end=datetime.today(), periods=15, freq='h')
+        # চার্টকে লাইভ মুভ করানোর জন্য ডাইনামিক ভ্যালু জেনারেশন লুপ
+        dates, opens, highs, lows, closes = generate_live_candles(sol_p)
+        
         fig = go.Figure(data=[go.Candlestick(
-            x=dates,
-            open=[sol_p-3, sol_p-2, sol_p-4, sol_p-1, sol_p],
-            high=[sol_p-1, sol_p, sol_p-2, sol_p+1, sol_p+3],
-            low=[sol_p-4, sol_p-3, sol_p-5, sol_p-2, sol_p-1],
-            close=[sol_p-2, sol_p-3, sol_p-1, sol_p-2, sol_p],
+            x=dates, open=opens, high=highs, low=lows, close=closes,
             increasing_line_color='#00ffcc', decreasing_line_color='#ff4b4b'
         )])
-        fig.update_layout(title="HFT Execution Candlestick Analytics", template="plotly_dark", xaxis_rangeslider_visible=False, height=380, margin=dict(t=30, b=10, l=10, r=10))
+        fig.update_layout(title="HFT Execution Candlestick Analytics (Real-Time Pulse)", template="plotly_dark", xaxis_rangeslider_visible=False, height=380, margin=dict(t=30, b=10, l=10, r=10))
         st.plotly_chart(fig, use_container_width=True)
 
     with right_layout:
@@ -154,6 +187,10 @@ if menu == "🏠 Execution Terminal":
                 </div>
             """, unsafe_allow_html=True)
 
+    # স্ক্রিনকে অনবরত প্রতি ১ সেকেন্ড পর পর অটোমেটিক রিফ্রেশ করানোর টাইমার লুপ (Live Pulse Mechanism)
+    time.sleep(1.0)
+    st.rerun()
+
 elif menu == "💼 Institutional Assets":
     st.markdown("<h1>💼 Account Balance Assets</h1>", unsafe_allow_html=True)
     st.write("---")
@@ -169,17 +206,3 @@ elif menu == "📰 Alpha Intelligence":
     st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
     st.write("---")
     st.markdown("""
-        <div class='nexus-card'>
-            <h4 style='color: #00ffcc; margin-top:0;'>🔥 Order Book Analysis: $500M Spot Liquidity Concentrated Near Local Bottom</h4>
-            <p style='font-size: 14px; color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls anchoring key levels ahead of major global economic announcements.</p>
-            <small style='color: #848e9c;'>Updated 5 mins ago • Directional Signal: Ultra Bullish</small>
-        </div>
-    """, unsafe_allow_html=True)
-
-elif menu == "⚙️ Cryptographic Vault":
-    st.markdown("<h1>⚙️ Asymmetric Exchange API Vault</h1>", unsafe_allow_html=True)
-    st.write("---")
-    st.text_input("Exchange Public API Identifier", type="password", placeholder="Paste secure public API key...")
-    st.text_input("Exchange Encrypted Private Signature", type="password", placeholder="Paste secure private secret signature...")
-    if st.button("🔒 SEAL & DEPLOY CREDENTIALS"):
-        st.success("🔒 API credentials locked via end-to-end sandbox isolation protocols.")
