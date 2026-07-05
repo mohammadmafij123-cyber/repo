@@ -60,12 +60,7 @@ def get_live_market_data(symbol):
 def generate_live_candles(base_price):
     now = datetime.now()
     dates = [now - timedelta(minutes=x) for x in range(10, 0, -1)]
-    
-    opens = []
-    highs = []
-    lows = []
-    closes = []
-    
+    opens, highs, lows, closes = [], [], [], []
     current = base_price - 2.5
     for _ in range(9):
         o = current
@@ -77,8 +72,6 @@ def generate_live_candles(base_price):
         lows.append(l)
         closes.append(c)
         current = c
-        
-    # সর্বশেষ লাইভ ক্যান্ডেল (যা অনবরত নড়াচড়া করবে)
     last_o = current
     last_c = base_price
     last_h = max(last_o, last_c) + random.uniform(0.05, 0.3)
@@ -87,7 +80,6 @@ def generate_live_candles(base_price):
     highs.append(last_h)
     lows.append(last_l)
     closes.append(last_c)
-    
     return dates, opens, highs, lows, closes
 
 btc_p, btc_pct = get_live_market_data('BTCUSDT')
@@ -119,9 +111,7 @@ if menu == "🏠 Execution Terminal":
     st.write("---")
     st.write("### ⚡ Operational Deployment Pipeline")
     
-    # 3-Column Premium Card Step Design
     card_col1, card_col2, card_col3 = st.columns(3)
-    
     with card_col1:
         st.markdown("""
             <div class='nexus-card'>
@@ -130,7 +120,6 @@ if menu == "🏠 Execution Terminal":
                 <div class='card-status'>✓ Node Secured & Encrypted</div>
             </div>
         """, unsafe_allow_html=True)
-        
     with card_col2:
         st.markdown("""
             <div class='nexus-card'>
@@ -139,7 +128,6 @@ if menu == "🏠 Execution Terminal":
                 <div class='card-status' style='color:#0099ff;'>⚡ Allocation Ready: $15.00</div>
             </div>
         """, unsafe_allow_html=True)
-        
     with card_col3:
         st.markdown("""
             <div class='nexus-card'>
@@ -150,14 +138,10 @@ if menu == "🏠 Execution Terminal":
         """, unsafe_allow_html=True)
 
     st.write("---")
-
-    # Financial Data Layout
     left_layout, right_layout = st.columns([1.6, 1])
 
     with left_layout:
-        # চার্টকে লাইভ মুভ করানোর জন্য ডাইনামিক ভ্যালু জেনারেশন লুপ
         dates, opens, highs, lows, closes = generate_live_candles(sol_p)
-        
         fig = go.Figure(data=[go.Candlestick(
             x=dates, open=opens, high=highs, low=lows, close=closes,
             increasing_line_color='#00ffcc', decreasing_line_color='#ff4b4b'
@@ -168,13 +152,11 @@ if menu == "🏠 Execution Terminal":
     with right_layout:
         st.write("### 🎛️ Algorithmic Control Hub")
         st.write("Trigger the system below to execute real-time order tracking and deploy stop-loss/take-profit guards.")
-        
         if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
             with st.spinner("Processing alpha order book profiles..."):
                 time.sleep(1.5)
                 st.balloons()
             st.success("Target Captured: Optimal structural setup loaded on SOLUSDT.")
-            
             tp_price = sol_p * 1.04
             sl_price = sol_p * 0.98
             st.markdown(f"""
@@ -187,7 +169,6 @@ if menu == "🏠 Execution Terminal":
                 </div>
             """, unsafe_allow_html=True)
 
-    # স্ক্রিনকে অনবরত প্রতি ১ সেকেন্ড পর পর অটোমেটিক রিফ্রেশ করানোর টাইমার লুপ (Live Pulse Mechanism)
     time.sleep(1.0)
     st.rerun()
 
@@ -206,3 +187,6 @@ elif menu == "📰 Alpha Intelligence":
     st.markdown("<h1>📰 Global Financial Macro Intel</h1>", unsafe_allow_html=True)
     st.write("---")
     st.markdown("""
+        <div class='nexus-card'>
+            <h4 style='color: #00ffcc; margin-top:0;'>Order Book Analysis: $500M Spot Liquidity Concentrated Near Local Bottom</h4>
+            <p style='font-size: 14px; color: #848e9c;'>Aggregated multi-exchange order books report heavy institutional buy walls anchoring key levels.</p>
