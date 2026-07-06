@@ -92,7 +92,7 @@ if menu == "🏠 Execution Terminal":
     st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
     st.write("### 🪙 Global Liquidity Ticker (Expanded Multi-Coin Scan)")
     
-    # ২ লাইনে মোট ৮টি কয়েন সুন্দর গ্রিডে দেখাবে (এরর মুক্ত ফরম্যাট)
+    # ২ লাইনে মোট ৮টি কয়েন সুন্দর গ্রিডে দেখাবে
     col1, col2, col3, col4 = st.columns(4)
     col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']['price']:,}", delta=f"{market_data['BTCUSDT']['change']:+.2f}%")
     col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']['price']:,}", delta=f"{market_data['ETHUSDT']['change']:+.2f}%")
@@ -177,5 +177,4 @@ if menu == "🏠 Execution Terminal":
             st.success(f"🎯 Target Captured: Optimal setup loaded on {best_coin}.")
             
             if use_filters:
-                st.markdown("""
-                <div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'>
+
