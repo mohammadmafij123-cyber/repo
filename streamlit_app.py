@@ -9,7 +9,7 @@ import random
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
-# 2. Institutional Themes & Custom CSS (Updated for Big Professional Login Card)
+# 2. TikTok Style Premium Dark Themes & Custom CSS
 st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
@@ -24,18 +24,22 @@ st.markdown("""
     /* Premium Block Containers */
     .crypto-grid-box { background-color: #161a1e; border: 1px solid #24292e; border-radius: 8px; padding: 25px; margin-bottom: 15px; }
     
-    /* Big Bold Professional Login Header & Card */
-    .login-title { font-size: 42px; font-weight: 900; color: #f0b90b; font-family: 'Segoe UI', sans-serif; text-align: center; margin-bottom: 5px; letter-spacing: 2px; }
-    .login-subtitle { font-size: 16px; color: #848e9c; text-align: center; margin-bottom: 30px; font-weight: 500; }
-    .login-card { background: linear-gradient(135deg, #12161c 0%, #1c222a 100%); border: 2px solid #f0b90b; border-radius: 12px; padding: 40px; box-shadow: 0 8px 32px rgba(240, 185, 11, 0.15); max-width: 600px; margin: 0 auto; }
+    /* TikTok Style Big Centered Box */
+    .tiktok-container { max-width: 480px; margin: 40px auto; background-color: #161a1e; border: 1px solid #2f363d; border-radius: 16px; padding: 40px 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); text-align: center; }
+    .tiktok-title { font-size: 32px; font-weight: 800; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin-bottom: 30px; letter-spacing: -0.5px; }
     
-    /* Premium Button Customization */
-    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 52px; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
-    .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.4) !important; }
+    /* Big Bold Form Label Styling */
+    label[data-testid="stWidgetLabel"] p { font-size: 16px !important; font-weight: 600 !important; color: #848e9c !important; text-align: left !important; margin-bottom: 8px !important; }
+    
+    /* Premium Large Button Customization */
+    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: 700; border-radius: 8px; border: none; height: 50px; font-size: 16px; margin-top: 15px; letter-spacing: 0.5px; }
+    .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(240, 185, 11, 0.3) !important; }
+    
+    /* Form Switch Footer */
+    .form-footer { font-size: 15px; color: #eaecef; text-align: center; margin-top: 30px; font-family: 'Segoe UI', sans-serif; }
+    .form-link { color: #fe2c55; font-weight: bold; text-decoration: none; cursor: pointer; }
+    
     div[data-testid="stMetricValue"] { font-size: 26px; font-weight: bold; color: #f0b90b !important; }
-    
-    /* Form Label Styling */
-    label[data-testid="stWidgetLabel"] p { font-size: 18px !important; font-weight: bold !important; color: #eaecef !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -46,6 +50,8 @@ if "logged_in_user" not in st.session_state:
     st.session_state["logged_in_user"] = None
 if "is_premium" not in st.session_state:
     st.session_state["is_premium"] = False
+if "auth_mode" not in st.session_state:
+    st.session_state["auth_mode"] = "login" # 'login' or 'signup'
 
 ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
 
@@ -60,49 +66,64 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- Big Professional Login & Sign Up Interface ---
+# --- TikTok Style Login & Sign Up Interface ---
 if st.session_state["logged_in_user"] is None:
-    st.markdown("<div class='login-title'>🔒 ACCESS GATEWAY</div>", unsafe_allow_html=True)
-    st.markdown("<div class='login-subtitle'>QUANTUM ALGORITHMIC TRADING TERMINAL V3.8</div>", unsafe_allow_html=True)
     
-    # সেন্টার এলাইনড বড় কার্ড ভিউ
-    tab1, tab2 = st.tabs(["🔑 REGISTERED SIGN IN", "📝 CREATE MAIN ACCOUNT"])
-    
-    with tab1:
-        st.markdown("<div class='login-card'>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color:#f0b90b; text-align:center; margin-top:0;'>SECURE LOGIN</h3>", unsafe_allow_html=True)
-        login_email = st.text_input("Enter Gmail Address:", key="login_email")
-        login_pass = st.text_input("Enter Password:", type="password", key="login_pass")
-        st.write("")
-        if st.button("CONNECT TO CORE ENGINE"):
+    # মোড ১: প্রফেশনাল লগইন ইন্টারফেস
+    if st.session_state["auth_mode"] == "login":
+        st.markdown("<div class='tiktok-container'>", unsafe_allow_html=True)
+        st.markdown("<div class='tiktok-title'>Log in to Nexus AI</div>", unsafe_allow_html=True)
+        
+        login_email = st.text_input("Gmail Address", key="login_email", placeholder="Enter your registered Gmail")
+        login_pass = st.text_input("Password", type="password", key="login_pass", placeholder="Enter your password")
+        
+        if st.button("Continue"):
             if login_email in st.session_state["user_db"] and st.session_state["user_db"][login_email] == login_pass:
                 st.session_state["logged_in_user"] = login_email
-                st.success(f"🎉 Access Granted! Loading Terminal for {login_email}...")
-                time.sleep(1)
+                st.success("🎉 Access Granted! Loading Matrix...")
+                time.sleep(0.5)
                 st.rerun()
             else:
-                st.error("❌ Authentication Failed! Invalid Gmail or Password.")
+                st.error("Invalid Gmail or password. Please try again.")
+                
+        # টিকটকের মতো কাস্টম ফুটার যা মোড চেঞ্জ করবে
+        st.write("")
+        st.markdown("<div class='form-footer'>Don't have an account?</div>", unsafe_allow_html=True)
+        if st.button("Sign up", key="go_to_signup"):
+            st.session_state["auth_mode"] = "signup"
+            st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
         
-    with tab2:
-        st.markdown("<div class='login-card'>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color:#f0b90b; text-align:center; margin-top:0;'>LICENSE REGISTRATION</h3>", unsafe_allow_html=True)
-        reg_email = st.text_input("Provide Gmail Address:", key="reg_email")
-        reg_pass = st.text_input("Create Account Password:", type="password", key="reg_pass")
-        reg_confirm = st.text_input("Confirm Account Password:", type="password", key="reg_confirm")
-        st.write("")
-        if st.button("INITIALIZE TERMINAL LICENSE"):
+    # মোড ২: প্রফেশনাল সাইন-আপ ইন্টারফেস
+    elif st.session_state["auth_mode"] == "signup":
+        st.markdown("<div class='tiktok-container'>", unsafe_allow_html=True)
+        st.markdown("<div class='tiktok-title'>Sign up for Nexus AI</div>", unsafe_allow_html=True)
+        
+        reg_email = st.text_input("Gmail Address", key="reg_email", placeholder="Enter a valid Gmail")
+        reg_pass = st.text_input("Create Password", type="password", key="reg_pass", placeholder="Minimum 6 characters")
+        reg_confirm = st.text_input("Confirm Password", type="password", key="reg_confirm", placeholder="Re-type password")
+        
+        if st.button("Create Account"):
             if "@" not in reg_email or "." not in reg_email:
-                st.error("❌ Invalid Email! Please provide a genuine Gmail account.")
+                st.error("Please enter a valid Gmail address.")
             elif reg_pass != reg_confirm:
-                st.error("❌ Synchronize Failed! Passwords do not match.")
+                st.error("Passwords do not match!")
             elif reg_email in st.session_state["user_db"]:
-                st.error("❌ Identity Conflict! This Gmail is already registered.")
+                st.error("This Gmail is already registered.")
             elif reg_pass == "":
-                st.error("❌ Password policy error: Cannot be empty.")
+                st.error("Password cannot be empty.")
             else:
                 st.session_state["user_db"][reg_email] = reg_pass
-                st.success("🎉 License Generated! Please switch to the 'SIGN IN' tab to log in.")
+                st.success("🎉 Registration Successful!")
+                time.sleep(0.5)
+                st.session_state["auth_mode"] = "login"
+                st.rerun()
+                
+        st.write("")
+        st.markdown("<div class='form-footer'>Already have an account?</div>", unsafe_allow_html=True)
+        if st.button("Log in", key="go_to_login"):
+            st.session_state["auth_mode"] = "login"
+            st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
 # --- After Login: Load Main Algorithmic Bot Dashboard ---
@@ -161,16 +182,3 @@ else:
         highs = [max(o, c) + random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
         lows = [min(o, c) - random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
         
-        fig = go.Figure(data=[go.Candlestick(x=dates, open=opens, high=highs, low=lows, close=closes)])
-        fig.update_layout(plot_bgcolor='#161a1e', paper_bgcolor='#0b0e11', xaxis_rangeslider_visible=False, height=300)
-        st.plotly_chart(fig, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with right_layout:
-        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-        st.write("### 🎛️ Algorithmic Control Hub")
-        
-        if st.session_state["is_premium"]:
-            rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
-            if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
-                st.balloons()
