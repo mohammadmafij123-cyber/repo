@@ -9,19 +9,33 @@ import random
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
-# 2. Institutional Themes & Custom CSS
+# 2. Institutional Themes & Custom CSS (Updated for Big Professional Login Card)
 st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
     [data-testid="stSidebar"] { background-color: #12161c !important; border-right: 1px solid #24292e; }
+    
+    /* Top Header Bar */
     .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #12161c; padding: 18px 25px; margin: -60px -60px 30px -60px; border-bottom: 2px solid #24292e; }
     .nexus-logo { font-size: 24px; font-weight: 900; color: #f0b90b; font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
     .nexus-sub-logo { font-size: 13px; color: #848e9c; margin-left: 10px; font-weight: 500; }
     .system-status { font-family: monospace; font-size: 12px; color: #02c076; background-color: rgba(2, 192, 118, 0.1); padding: 4px 10px; border-radius: 4px; }
-    .crypto-grid-box { background-color: #161a1e; border: 1px solid #24292e; border-radius: 8px; padding: 20px; margin-bottom: 15px; }
-    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; }
-    .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3) !important; }
+    
+    /* Premium Block Containers */
+    .crypto-grid-box { background-color: #161a1e; border: 1px solid #24292e; border-radius: 8px; padding: 25px; margin-bottom: 15px; }
+    
+    /* Big Bold Professional Login Header & Card */
+    .login-title { font-size: 42px; font-weight: 900; color: #f0b90b; font-family: 'Segoe UI', sans-serif; text-align: center; margin-bottom: 5px; letter-spacing: 2px; }
+    .login-subtitle { font-size: 16px; color: #848e9c; text-align: center; margin-bottom: 30px; font-weight: 500; }
+    .login-card { background: linear-gradient(135deg, #12161c 0%, #1c222a 100%); border: 2px solid #f0b90b; border-radius: 12px; padding: 40px; box-shadow: 0 8px 32px rgba(240, 185, 11, 0.15); max-width: 600px; margin: 0 auto; }
+    
+    /* Premium Button Customization */
+    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 52px; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.4) !important; }
     div[data-testid="stMetricValue"] { font-size: 26px; font-weight: bold; color: #f0b90b !important; }
+    
+    /* Form Label Styling */
+    label[data-testid="stWidgetLabel"] p { font-size: 18px !important; font-weight: bold !important; color: #eaecef !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -46,46 +60,53 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- জিমেইল লগইন এবং সাইন-আপ ইন্টারফেস ---
+# --- Big Professional Login & Sign Up Interface ---
 if st.session_state["logged_in_user"] is None:
-    st.write("## 🔐 Security Access Gateway")
-    tab1, tab2 = st.tabs(["🔒 Sign In", "📝 Create Account (Sign Up)"])
+    st.markdown("<div class='login-title'>🔒 ACCESS GATEWAY</div>", unsafe_allow_html=True)
+    st.markdown("<div class='login-subtitle'>QUANTUM ALGORITHMIC TRADING TERMINAL V3.8</div>", unsafe_allow_html=True)
+    
+    # সেন্টার এলাইনড বড় কার্ড ভিউ
+    tab1, tab2 = st.tabs(["🔑 REGISTERED SIGN IN", "📝 CREATE MAIN ACCOUNT"])
     
     with tab1:
-        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-        login_email = st.text_input("Gmail Address:", key="login_email")
-        login_pass = st.text_input("Password:", type="password", key="login_pass")
-        if st.button("Access Terminal"):
+        st.markdown("<div class='login-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#f0b90b; text-align:center; margin-top:0;'>SECURE LOGIN</h3>", unsafe_allow_html=True)
+        login_email = st.text_input("Enter Gmail Address:", key="login_email")
+        login_pass = st.text_input("Enter Password:", type="password", key="login_pass")
+        st.write("")
+        if st.button("CONNECT TO CORE ENGINE"):
             if login_email in st.session_state["user_db"] and st.session_state["user_db"][login_email] == login_pass:
                 st.session_state["logged_in_user"] = login_email
-                st.success(f"🎉 Welcome back, {login_email}!")
+                st.success(f"🎉 Access Granted! Loading Terminal for {login_email}...")
+                time.sleep(1)
                 st.rerun()
             else:
-                st.error("❌ Invalid Gmail or Password! Please try again.")
+                st.error("❌ Authentication Failed! Invalid Gmail or Password.")
         st.markdown("</div>", unsafe_allow_html=True)
         
     with tab2:
-        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-        reg_email = st.text_input("Enter your Gmail:", key="reg_email")
-        reg_pass = st.text_input("Create strong Password:", type="password", key="reg_pass")
-        reg_confirm = st.text_input("Confirm Password:", type="password", key="reg_confirm")
-        if st.button("Register License"):
+        st.markdown("<div class='login-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#f0b90b; text-align:center; margin-top:0;'>LICENSE REGISTRATION</h3>", unsafe_allow_html=True)
+        reg_email = st.text_input("Provide Gmail Address:", key="reg_email")
+        reg_pass = st.text_input("Create Account Password:", type="password", key="reg_pass")
+        reg_confirm = st.text_input("Confirm Account Password:", type="password", key="reg_confirm")
+        st.write("")
+        if st.button("INITIALIZE TERMINAL LICENSE"):
             if "@" not in reg_email or "." not in reg_email:
-                st.error("❌ Please enter a valid Gmail address.")
+                st.error("❌ Invalid Email! Please provide a genuine Gmail account.")
             elif reg_pass != reg_confirm:
-                st.error("❌ Passwords do not match!")
+                st.error("❌ Synchronize Failed! Passwords do not match.")
             elif reg_email in st.session_state["user_db"]:
-                st.error("❌ This Gmail is already registered. Please sign in.")
+                st.error("❌ Identity Conflict! This Gmail is already registered.")
             elif reg_pass == "":
-                st.error("❌ Password cannot be empty.")
+                st.error("❌ Password policy error: Cannot be empty.")
             else:
                 st.session_state["user_db"][reg_email] = reg_pass
-                st.success("🎉 Account created successfully! Please switch to the 'Sign In' tab to log in.")
+                st.success("🎉 License Generated! Please switch to the 'SIGN IN' tab to log in.")
         st.markdown("</div>", unsafe_allow_html=True)
 
-# --- ইউজার সফলভাবে লগইন করার পর মূল ড্যাশবোর্ড লোড হবে ---
+# --- After Login: Load Main Algorithmic Bot Dashboard ---
 else:
-    # Public Binance API Call Mocks
     def get_live_market_data(symbol):
         mocks = {
             'BTCUSDT': {"price": 62894.0, "change": -0.6}, 'ETHUSDT': {"price": 3420.0, "change": 4.1}, 
@@ -100,7 +121,7 @@ else:
 
     # Sidebar Customization
     st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
-    st.sidebar.write(f"👤 **User:** {st.session_state['logged_in_user']}")
+    st.sidebar.write(f"👤 **Active Node:** {st.session_state['logged_in_user']}")
     
     st.sidebar.write("---")
     st.sidebar.write("### 👑 Membership Status")
@@ -111,7 +132,7 @@ else:
         st.sidebar.info("Upgrade to PRO via the Control Hub to unlock trading features.")
         
     st.sidebar.write("---")
-    if st.sidebar.button("🚪 Logout Account"):
+    if st.sidebar.button("🚪 TERMINATE SESSION (LOGOUT)"):
         st.session_state["logged_in_user"] = None
         st.session_state["is_premium"] = False
         st.rerun()
@@ -153,19 +174,3 @@ else:
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
             if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
                 st.balloons()
-                st.success("🎯 Target Captured! Strategic Order Executed successfully.")
-        else:
-            st.error("🔒 PREMIUM FEATURE LOCKED")
-            st.write("Please upgrade to premium plan to access automated trading bot.")
-            st.success("📢 bKash (Personal): 017XXXXXXXX (500 BDT)")
-            st.info("🔶 Binance Pay ID: 123456789 ($4 USD)")
-            
-            input_code = st.text_input("🔑 Enter Activation Code:", type="password", key="user_code")
-            if st.button("🔓 Apply Code & Upgrade"):
-                if input_code == ADMIN_SECRET_CODE:
-                    st.session_state["is_premium"] = True
-                    st.success("🎉 Upgrade Successful!")
-                    st.rerun()
-                else:
-                    st.error("❌ Invalid Activation Code!")
-        st.markdown("</div>", unsafe_allow_html=True)
