@@ -137,7 +137,7 @@ else:
         
         st.write("---")
 
-        # পেমেন্ট ভেরিফিকেশন গেটওয়ে
+        # ১. পেমেন্ট গেটওয়ে (যদি ইউজার প্রিমিয়াম না হয়)
         if not st.session_state["is_premium"]:
             st.error("🔒 PREMIUM LICENSE GATEWAY VERIFICATION")
             st.info("📢 bKash (Personal): 017XXXXXXXX (500 BDT) | 🔶 Binance Pay ID: 123456789 ($4 USD)")
@@ -150,9 +150,10 @@ else:
                     st.rerun()
                 else: st.error("❌ Invalid Code! Please provide a correct activation key.")
                     
-        # প্রিমিয়াম আনলকড ফিচার
+        # ২. প্রিমিয়াম আনলকড ফিচার (ফিক্সড লেআউট: কোড দেওয়ার সাথে সাথে সব ফিচার লোড হবে)
         if st.session_state["is_premium"]:
             st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
             st.write("### 🎛️ Algorithmic Control Hub (PRO ACTIVE)")
+            
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
-            use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
+            
