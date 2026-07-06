@@ -88,8 +88,8 @@ if menu == "🏠 Execution Terminal":
     
     # ২ লাইনে মোট ৮টি কয়েন সুন্দর গ্রিডে দেখাবে
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT'][0]:,}", delta=f"{market_data['BTCUSDT'][1]:+.2f}%")
-    col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT'][0]:,}", delta=f"{market_data['ETHUSDT'][1]:+.2f}%")
+    col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']:,}", delta=f"{market_data['BTCUSDT'][1]:+.2f}%")
+    col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']:,}", delta=f"{market_data['ETHUSDT'][1]:+.2f}%")
     col3.metric(label="Solana (SOL)", value=f"${market_data['SOLUSDT'][0]}", delta=f"{market_data['SOLUSDT'][1]:+.2f}%")
     col4.metric(label="Binance (BNB)", value=f"${market_data['BNBUSDT'][0]}", delta=f"{market_data['BNBUSDT'][1]:+.2f}%")
     
@@ -166,7 +166,6 @@ if menu == "🏠 Execution Terminal":
                 time.sleep(1.5)
                 st.balloons()
             
-            # বেস্ট কয়েন হিসেবে স্ক্যানার স্বয়ংক্রিয়ভাবে একটি প্লাস ট্রেন্ডের কয়েন সিলেক্ট করবে
             best_coin = 'SOLUSDT'
             coin_price = market_data[best_coin][0]
             
@@ -179,3 +178,5 @@ if menu == "🏠 Execution Terminal":
                     <span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | 
                     <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span>
                 </div>
+                """, unsafe_allow_html=True)
+                
