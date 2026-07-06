@@ -6,12 +6,6 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import random
 
-# Import Binance Library
-try:
-    from binance.client import Client
-except ImportError:
-    st.error("Please add 'python-binance' to your requirements.txt file in GitHub.")
-
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
@@ -32,14 +26,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 3. Secure User Authentication State Management
-if "user_db" not in st.session_state:
-    st.session_state["user_db"] = {"admin@nexus.com": "admin123"}
-if "logged_in_user" not in st.session_state:
-    st.session_state["logged_in_user"] = None
-if "is_premium" not in st.session_state:
-    st.session_state["is_premium"] = False
-if "auth_mode" not in st.session_state:
-    st.session_state["auth_mode"] = "login"
+if "user_db" not in st.session_state: st.session_state["user_db"] = {"admin@nexus.com": "admin123"}
+if "logged_in_user" not in st.session_state: st.session_state["logged_in_user"] = None
+if "is_premium" not in st.session_state: st.session_state["is_premium"] = False
+if "auth_mode" not in st.session_state: st.session_state["auth_mode"] = "login"
 
 ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
 
@@ -67,8 +57,7 @@ if st.session_state["logged_in_user"] is None:
                 st.success("🎉 Access Granted! Loading Matrix...")
                 time.sleep(0.5)
                 st.rerun()
-            else:
-                st.error("Invalid Gmail or password. Please try again.")
+            else: st.error("Invalid Gmail or password. Please try again.")
         st.write("")
         st.markdown("<div style='font-size: 15px; color: #eaecef; text-align: center; margin-top: 20px;'>Don't have an account?</div>", unsafe_allow_html=True)
         if st.button("Sign up", key="go_to_signup"):
@@ -83,14 +72,10 @@ if st.session_state["logged_in_user"] is None:
         reg_pass = st.text_input("Create Password", type="password", key="reg_pass", placeholder="Minimum 6 characters")
         reg_confirm = st.text_input("Confirm Password", type="password", key="reg_confirm", placeholder="Re-type password")
         if st.button("Create Account"):
-            if "@" not in reg_email or "." not in reg_email:
-                st.error("Please enter a valid Gmail address.")
-            elif reg_pass != reg_confirm:
-                st.error("Passwords do not match!")
-            elif reg_email in st.session_state["user_db"]:
-                st.error("This Gmail is already registered.")
-            elif reg_pass == "":
-                st.error("Password cannot be empty.")
+            if "@" not in reg_email or "." not in reg_email: st.error("Please enter a valid Gmail address.")
+            elif reg_pass != reg_confirm: st.error("Passwords do not match!")
+            elif reg_email in st.session_state["user_db"]: st.error("This Gmail is already registered.")
+            elif reg_pass == "": st.error("Password cannot be empty.")
             else:
                 st.session_state["user_db"][reg_email] = reg_pass
                 st.success("🎉 Registration Successful!")
@@ -106,14 +91,8 @@ if st.session_state["logged_in_user"] is None:
 
 # --- After Login: Load Main Algorithmic Bot Dashboard ---
 else:
-    # Read Streamlit Secrets (Binance Porter Status)
-    try:
-        binance_api_key = st.secrets["BINANCE_API_KEY"]
-        binance_secret_key = st.secrets["BINANCE_SECRET_KEY"]
-        client = Client(binance_api_key, binance_secret_key)
-        api_connected = True
-    except Exception:
-        api_connected = False
+    # Read Streamlit Secrets securely
+    api_connected = True if "BINANCE_API_KEY" in st.secrets else False
 
     def get_live_market_data(symbol):
         mocks = {
@@ -127,15 +106,14 @@ else:
     symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOTUSDT', 'DOGEUSDT']
     market_data = {sym: get_live_market_data(sym) for sym in symbols}
 
-    # Sidebar Navigation (ফিক্সড: মেনু ২টি সবসময় দৃশ্যমান থাকবে)
+    # Sidebar Navigation System
     st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
-    menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "⚙️ Cryptographic Vault"], key="navigation_menu")
+    menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "⚙️ Cryptographic Vault"], key="main_nav_menu")
     st.sidebar.write(f"👤 **Active Node:** {st.session_state['logged_in_user']}")
     
     st.sidebar.write("---")
     st.sidebar.write("### 👑 Membership Status")
-    if st.session_state["is_premium"]:
-        st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
+    if st.session_state["is_premium"]: st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
     else:
         st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
         st.sidebar.info("Upgrade to PRO using the Activation Hub below.")
@@ -159,7 +137,7 @@ else:
         
         st.write("---")
 
-        # পেমেন্ট ভেরিফিকেশন সিস্টেম
+        # পেমেন্ট ভেরিফিকেশন গেটওয়ে
         if not st.session_state["is_premium"]:
             st.error("🔒 PREMIUM LICENSE GATEWAY VERIFICATION")
             st.info("📢 bKash (Personal): 017XXXXXXXX (500 BDT) | 🔶 Binance Pay ID: 123456789 ($4 USD)")
@@ -170,4 +148,11 @@ else:
                     st.success("🎉 License Activated successfully! Reloading...")
                     time.sleep(0.5)
                     st.rerun()
-                else:
+                else: st.error("❌ Invalid Code! Please provide a correct activation key.")
+                    
+        # প্রিমিয়াম আনলকড ফিচার
+        if st.session_state["is_premium"]:
+            st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+            st.write("### 🎛️ Algorithmic Control Hub (PRO ACTIVE)")
+            rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
+            use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
