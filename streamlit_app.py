@@ -6,12 +6,6 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import random
 
-# Import Binance Library
-try:
-    from binance.client import Client
-except ImportError:
-    st.error("Please add 'python-binance' to your requirements.txt file in GitHub.")
-
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
@@ -31,11 +25,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Premium Subscription State Management
+# ৩. লোকাল ডাটাবেজ সিমুলেশন (ইউজার ডেটা স্টোর করার জন্য)
+if "user_db" not in st.session_state:
+    st.session_state["user_db"] = {"admin@nexus.com": "admin123"} # ডিফল্ট ডেমো ইউজার
+if "logged_in_user" not in st.session_state:
+    st.session_state["logged_in_user"] = None
 if "is_premium" not in st.session_state:
     st.session_state["is_premium"] = False
 
-# Your Secret Premium Activation Code
 ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
 
 # Top Executive Header Bar
@@ -49,21 +46,47 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Read Streamlit Secrets
-try:
-    binance_api_key = st.secrets["BINANCE_API_KEY"]
-    binance_secret_key = st.secrets["BINANCE_SECRET_KEY"]
-    client = Client(binance_api_key, binance_secret_key)
-    api_connected = True
-except Exception:
-    api_connected = False
+# --- জিমেইল লগইন এবং সাইন-আপ ইন্টারফেস ---
+if st.session_state["logged_in_user"] is None:
+    st.write("## 🔐 Security Access Gateway")
+    tab1, tab2 = st.tabs(["🔒 Sign In", "📝 Create Account (Sign Up)"])
+    
+    with tab1:
+        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+        login_email = st.text_input("Gmail Address:", key="login_email")
+        login_pass = st.text_input("Password:", type="password", key="login_pass")
+        if st.button("Access Terminal"):
+            if login_email in st.session_state["user_db"] and st.session_state["user_db"][login_email] == login_pass:
+                st.session_state["logged_in_user"] = login_email
+                st.success(f"🎉 Welcome back, {login_email}!")
+                st.rerun()
+            else:
+                st.error("❌ Invalid Gmail or Password! Please try again.")
+        st.markdown("</div>", unsafe_allow_html=True)
+        
+    with tab2:
+        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+        reg_email = st.text_input("Enter your Gmail:", key="reg_email")
+        reg_pass = st.text_input("Create strong Password:", type="password", key="reg_pass")
+        reg_confirm = st.text_input("Confirm Password:", type="password", key="reg_confirm")
+        if st.button("Register License"):
+            if "@" not in reg_email or "." not in reg_email:
+                st.error("❌ Please enter a valid Gmail address.")
+            elif reg_pass != reg_confirm:
+                st.error("❌ Passwords do not match!")
+            elif reg_email in st.session_state["user_db"]:
+                st.error("❌ This Gmail is already registered. Please sign in.")
+            elif reg_pass == "":
+                st.error("❌ Password cannot be empty.")
+            else:
+                st.session_state["user_db"][reg_email] = reg_pass
+                st.success("🎉 Account created successfully! Please switch to the 'Sign In' tab to log in.")
+        st.markdown("</div>", unsafe_allow_html=True)
 
-# Public Binance API Call
-def get_live_market_data(symbol):
-    try:
-        res = requests.get(f"https://binance.com{symbol}", timeout=2).json()
-        return {"price": float(res['lastPrice']), "change": float(res['priceChangePercent'])}
-    except:
+# --- ইউজার সফলভাবে লগইন করার পর মূল ড্যাশবোর্ড লোড হবে ---
+else:
+    # Public Binance API Call Mocks
+    def get_live_market_data(symbol):
         mocks = {
             'BTCUSDT': {"price": 62894.0, "change": -0.6}, 'ETHUSDT': {"price": 3420.0, "change": 4.1}, 
             'SOLUSDT': {"price": 184.6, "change": 5.8}, 'BNBUSDT': {"price": 585.0, "change": -0.4},
@@ -72,46 +95,38 @@ def get_live_market_data(symbol):
         }
         return mocks.get(symbol, {"price": 100.0, "change": 0.0})
 
-symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOTUSDT', 'DOGEUSDT']
-market_data = {sym: get_live_market_data(sym) for sym in symbols}
+    symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOTUSDT', 'DOGEUSDT']
+    market_data = {sym: get_live_market_data(sym) for sym in symbols}
 
-# 4. Sidebar Navigation
-st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
-menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
+    # Sidebar Customization
+    st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
+    st.sidebar.write(f"👤 **User:** {st.session_state['logged_in_user']}")
+    
+    st.sidebar.write("---")
+    st.sidebar.write("### 👑 Membership Status")
+    if st.session_state["is_premium"]:
+        st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
+    else:
+        st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
+        st.sidebar.info("Upgrade to PRO via the Control Hub to unlock trading features.")
+        
+    st.sidebar.write("---")
+    if st.sidebar.button("🚪 Logout Account"):
+        st.session_state["logged_in_user"] = None
+        st.session_state["is_premium"] = False
+        st.rerun()
 
-st.sidebar.write("---")
-st.sidebar.write("### 👑 Membership Status")
-if st.session_state["is_premium"]:
-    st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
-else:
-    st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
-    st.sidebar.info("Unlock automated bot by upgrading to PRO via the Control Hub panel.")
-
-st.sidebar.write("---")
-st.sidebar.write("### 🛡️ FireWall Status")
-st.sidebar.success("🛡️ Dynamic Guard: ACTIVE")
-
-# 5. Main Dashboard View
-if menu == "🏠 Execution Terminal":
+    # Main Grid Layout
     st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
     st.write("### 🪙 Global Liquidity Ticker (Expanded Multi-Coin Scan)")
-    
     col1, col2, col3, col4 = st.columns(4)
     col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']['price']:,}", delta=f"{market_data['BTCUSDT']['change']:+.2f}%")
     col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']['price']:,}", delta=f"{market_data['ETHUSDT']['change']:+.2f}%")
     col3.metric(label="Solana (SOL)", value=f"${market_data['SOLUSDT']['price']}", delta=f"{market_data['SOLUSDT']['change']:+.2f}%")
     col4.metric(label="Binance (BNB)", value=f"${market_data['BNBUSDT']['price']}", delta=f"{market_data['BNBUSDT']['change']:+.2f}%")
-    
-    col5, col6, col7, col8 = st.columns(4)
-    col5.metric(label="Ripple (XRP)", value=f"${market_data['XRPUSDT']['price']}", delta=f"{market_data['XRPUSDT']['change']:+.2f}%")
-    col6.metric(label="Cardano (ADA)", value=f"${market_data['ADAUSDT']['price']}", delta=f"{market_data['ADAUSDT']['change']:+.2f}%")
-    col7.metric(label="Polkadot (DOT)", value=f"${market_data['DOTUSDT']['price']}", delta=f"{market_data['DOTUSDT']['change']:+.2f}%")
-    col8.metric(label="Dogecoin (DOGE)", value=f"${market_data['DOGEUSDT']['price']}", delta=f"{market_data['DOGEUSDT']['change']:+.2f}%")
     st.markdown("</div>", unsafe_allow_html=True)
     
     st.write("---")
-    
-    # 2 Column Layout Structure
     left_layout, right_layout = st.columns([1.6, 1])
     
     with left_layout:
@@ -125,18 +140,8 @@ if menu == "🏠 Execution Terminal":
         highs = [max(o, c) + random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
         lows = [min(o, c) - random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
         
-        fig = go.Figure(data=[go.Candlestick(
-            x=dates, open=opens, high=highs, low=lows, close=closes,
-            increasing_line_color='#02c076', decreasing_line_color='#f6465d',
-            increasing_fillcolor='#02c076', decreasing_fillcolor='#f6465d',
-            line=dict(width=1.2)
-        )])
-        fig.update_layout(
-            plot_bgcolor='#161a1e', paper_bgcolor='#0b0e11', xaxis_rangeslider_visible=False, height=340,
-            margin=dict(t=10, b=10, l=10, r=10),
-            xaxis=dict(showgrid=True, gridcolor='#24292e', type='date', range=[dates[-20], dates[-1]]),
-            yaxis=dict(showgrid=True, gridcolor='#24292e', side='right')
-        )
+        fig = go.Figure(data=[go.Candlestick(x=dates, open=opens, high=highs, low=lows, close=closes)])
+        fig.update_layout(plot_bgcolor='#161a1e', paper_bgcolor='#0b0e11', xaxis_rangeslider_visible=False, height=300)
         st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -144,38 +149,23 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("### 🎛️ Algorithmic Control Hub")
         
-        # প্রিমিয়াম সেশন অন থাকলে কন্ট্রোল প্যানেল দেখাবে
         if st.session_state["is_premium"]:
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
-            st.write("---")
-            st.write("⚙️ **Advanced Strategy Configurations**")
-            use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
-            use_filters = st.checkbox("Enable RSI & MACD Trend Filters (⚠️ Avoid Fake Signals)", value=True)
-            st.write("---")
             if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
-                with st.spinner("Scanning 8 markets with RSI & MACD filters..."):
-                    time.sleep(1.5)
-                    st.balloons()
-                best_coin = 'SOLUSDT'
-                coin_price = market_data[best_coin]['price']
-                st.success(f"🎯 Target Captured: Optimal setup loaded on {best_coin}.")
-                st.markdown("<div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'><span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span></div>", unsafe_allow_html=True)
-                tp_price = coin_price * (1 + (0.015 * rr_ratio))
-                sl_price = coin_price * 0.985
-                st.markdown("### 🟢 STRATEGIC ORDER OPENED")
-                st.write(f"• **Asset Pair:** {best_coin}")
-                st.write(f"• **Entry Price:** ${coin_price:.2f}")
-                st.write(f"• **Target Take-Profit (TP):** ${tp_price:.2f}")
-                st.write(f"• **Max Stop-Loss (SL):** ${sl_price:.2f}")
-        
-        # পেমেন্ট লক স্ক্রিন ও লগইন ইনপুট (এরর চিরতরে দূর করতে ইনলাইন ফর্মে ফিক্সড করা হলো)
+                st.balloons()
+                st.success("🎯 Target Captured! Strategic Order Executed successfully.")
         else:
             st.error("🔒 PREMIUM FEATURE LOCKED")
-            st.write("Please upgrade to premium plan to access automated trading bot & advanced indicator scanning.")
-            st.write("---")
-            st.write("**💸 Available Payment Methods:**")
+            st.write("Please upgrade to premium plan to access automated trading bot.")
             st.success("📢 bKash (Personal): 017XXXXXXXX (500 BDT)")
             st.info("🔶 Binance Pay ID: 123456789 ($4 USD)")
-            st.write("---")
             
-            # স্পেসের ক্র্যাশ এড়াতে ইনপুট সিস্টেমটি একদম সোজা লজিকে সিঙ্গেল লাইনে কনভার্ট করা হয়েছে
+            input_code = st.text_input("🔑 Enter Activation Code:", type="password", key="user_code")
+            if st.button("🔓 Apply Code & Upgrade"):
+                if input_code == ADMIN_SECRET_CODE:
+                    st.session_state["is_premium"] = True
+                    st.success("🎉 Upgrade Successful!")
+                    st.rerun()
+                else:
+                    st.error("❌ Invalid Activation Code!")
+        st.markdown("</div>", unsafe_allow_html=True)
