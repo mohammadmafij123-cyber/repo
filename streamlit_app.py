@@ -6,6 +6,12 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import random
 
+# Import Binance Library
+try:
+    from binance.client import Client
+except ImportError:
+    st.error("Please add 'python-binance' to your requirements.txt file in GitHub.")
+
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
@@ -100,6 +106,15 @@ if st.session_state["logged_in_user"] is None:
 
 # --- After Login: Load Main Algorithmic Bot Dashboard ---
 else:
+    # Read Streamlit Secrets (Binance Porter Status)
+    try:
+        binance_api_key = st.secrets["BINANCE_API_KEY"]
+        binance_secret_key = st.secrets["BINANCE_SECRET_KEY"]
+        client = Client(binance_api_key, binance_secret_key)
+        api_connected = True
+    except Exception:
+        api_connected = False
+
     def get_live_market_data(symbol):
         mocks = {
             'BTCUSDT': {"price": 62894.0, "change": -0.6}, 'ETHUSDT': {"price": 3420.0, "change": 4.1}, 
@@ -112,8 +127,9 @@ else:
     symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOTUSDT', 'DOGEUSDT']
     market_data = {sym: get_live_market_data(sym) for sym in symbols}
 
-    # Sidebar Customization
+    # Sidebar Navigation (ফিক্সড: মেনু ২টি সবসময় দৃশ্যমান থাকবে)
     st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
+    menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "⚙️ Cryptographic Vault"], key="navigation_menu")
     st.sidebar.write(f"👤 **Active Node:** {st.session_state['logged_in_user']}")
     
     st.sidebar.write("---")
@@ -130,41 +146,28 @@ else:
         st.session_state["is_premium"] = False
         st.rerun()
 
-    # Main Grid Layout
-    st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-    st.write("### 🪙 Global Liquidity Ticker (Expanded Multi-Coin Scan)")
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']['price']:,}", delta=f"{market_data['BTCUSDT']['change']:+.2f}%")
-    col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']['price']:,}", delta=f"{market_data['ETHUSDT']['change']:+.2f}%")
-    col3.metric(label="Solana (SOL)", value=f"${market_data['SOLUSDT']['price']}", delta=f"{market_data['SOLUSDT']['change']:+.2f}%")
-    col4.metric(label="Binance (BNB)", value=f"${market_data['BNBUSDT']['price']}", delta=f"{market_data['BNBUSDT']['change']:+.2f}%")
-    st.markdown("</div>", unsafe_allow_html=True)
-    
-    st.write("---")
-
-    # সরাসরি মেইন স্ক্রিনে পেমেন্ট ভেরিফিকেশন সিস্টেম (সার্ভার লক পুরোপুরি মুক্ত)
-    st.error("🔒 PREMIUM LICENSE GATEWAY VERIFICATION")
-    st.info("📢 bKash (Personal): 017XXXXXXXX (500 BDT) | 🔶 Binance Pay ID: 123456789 ($4 USD)")
-    
-    input_code = st.text_input("🔑 Enter License Activation Code:", type="password", key="user_code")
-    
-    if st.button("🔓 Verify & Activate Lifetime License"):
-        if input_code == ADMIN_SECRET_CODE:
-            st.session_state["is_premium"] = True
-            st.success("🎉 License Activated successfully! Entering Premium Mode...")
-        else:
-            st.error("❌ Invalid Code! Please provide a correct activation key.")
-            
-    # কোড বসানো হলে চার্ট এবং কন্ট্রোল প্যানেল নিচে রেন্ডার হবে
-    if st.session_state["is_premium"]:
-        st.write("---")
-        st.write("### 🎛️ Algorithmic Control Hub (PRO ACTIVE)")
-        rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
-        use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
-        use_filters = st.checkbox("Enable RSI & MACD Trend Filters (⚠️ Avoid Fake Signals)", value=True)
-        if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
-            st.balloons()
-            st.success("🎯 Target Captured! Strategic Order Executed successfully.")
+    # মেইন পেজ ১: Execution Terminal
+    if menu == "🏠 Execution Terminal":
+        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+        st.write("### 🪙 Global Liquidity Ticker (Expanded Multi-Coin Scan)")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']['price']:,}", delta=f"{market_data['BTCUSDT']['change']:+.2f}%")
+        col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']['price']:,}", delta=f"{market_data['ETHUSDT']['change']:+.2f}%")
+        col3.metric(label="Solana (SOL)", value=f"${market_data['SOLUSDT']['price']}", delta=f"{market_data['SOLUSDT']['change']:+.2f}%")
+        col4.metric(label="Binance (BNB)", value=f"${market_data['BNBUSDT']['price']}", delta=f"{market_data['BNBUSDT']['change']:+.2f}%")
+        st.markdown("</div>", unsafe_allow_html=True)
         
         st.write("---")
-        st.write("📈 **HFT Execution Candlestick Analytics**")
+
+        # পেমেন্ট ভেরিফিকেশন সিস্টেম
+        if not st.session_state["is_premium"]:
+            st.error("🔒 PREMIUM LICENSE GATEWAY VERIFICATION")
+            st.info("📢 bKash (Personal): 017XXXXXXXX (500 BDT) | 🔶 Binance Pay ID: 123456789 ($4 USD)")
+            input_code = st.text_input("🔑 Enter License Activation Code:", type="password", key="user_code")
+            if st.button("🔓 Verify & Activate Lifetime License"):
+                if input_code == ADMIN_SECRET_CODE:
+                    st.session_state["is_premium"] = True
+                    st.success("🎉 License Activated successfully! Reloading...")
+                    time.sleep(0.5)
+                    st.rerun()
+                else:
