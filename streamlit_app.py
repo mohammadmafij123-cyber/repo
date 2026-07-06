@@ -14,7 +14,7 @@ st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
     [data-testid="stSidebar"] { background-color: #12161c !important; border-right: 1px solid #24292e; }
-    .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #12161c; padding: 18px 25px; margin: -px -60px 30px -60px; border-bottom: 2px solid #24292e; }
+    .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #12161c; padding: 18px 25px; margin: -60px -60px 30px -60px; border-bottom: 2px solid #24292e; }
     .nexus-logo { font-size: 24px; font-weight: 900; color: #f0b90b; font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
     .nexus-sub-logo { font-size: 13px; color: #848e9c; margin-left: 10px; font-weight: 500; }
     .system-status { font-family: monospace; font-size: 12px; color: #02c076; background-color: rgba(2, 192, 118, 0.1); padding: 4px 10px; border-radius: 4px; }
@@ -142,8 +142,22 @@ else:
     
     st.write("---")
 
-    # সুনিশ্চিত এরর ও হাইড ফ্রি গেটওয়ে লজিক (১০০% স্ট্রিমলিট নেটিভ এলিমেন্ট)
+    # সরাসরি মেইন স্ক্রিনে পেমেন্ট ভেরিফিকেশন সিস্টেম (সার্ভার লক পুরোপুরি মুক্ত)
+    st.error("🔒 PREMIUM LICENSE GATEWAY VERIFICATION")
+    st.info("📢 bKash (Personal): 017XXXXXXXX (500 BDT) | 🔶 Binance Pay ID: 123456789 ($4 USD)")
+    
+    input_code = st.text_input("🔑 Enter License Activation Code:", type="password", key="user_code")
+    
+    if st.button("🔓 Verify & Activate Lifetime License"):
+        if input_code == ADMIN_SECRET_CODE:
+            st.session_state["is_premium"] = True
+            st.success("🎉 License Activated successfully! Entering Premium Mode...")
+        else:
+            st.error("❌ Invalid Code! Please provide a correct activation key.")
+            
+    # কোড বসানো হলে চার্ট এবং কন্ট্রোল প্যানেল নিচে রেন্ডার হবে
     if st.session_state["is_premium"]:
+        st.write("---")
         st.write("### 🎛️ Algorithmic Control Hub (PRO ACTIVE)")
         rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
         use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
@@ -152,15 +166,5 @@ else:
             st.balloons()
             st.success("🎯 Target Captured! Strategic Order Executed successfully.")
         
-        # চার্ট ডিসপ্লে
         st.write("---")
         st.write("📈 **HFT Execution Candlestick Analytics**")
-        sol_p = market_data['SOLUSDT']['price']
-        now = datetime.now()
-        dates = [now - timedelta(minutes=x) for x in range(30, 0, -1)]
-        opens = [sol_p - random.uniform(-1, 1) for _ in range(30)]
-        closes = [o + random.uniform(-1.5, 1.5) for o in opens]
-        highs = [max(o, c) + random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
-        lows = [min(o, c) - random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
-        fig = go.Figure(data=[go.Candlestick(x=dates, open=opens, high=highs, low=lows, close=closes)])
-        fig.update_layout(plot_bgcolor='#161a1e', paper_bgcolor='#0b0e11', xaxis_rangeslider_visible=False, height=340)
