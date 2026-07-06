@@ -168,7 +168,7 @@ if menu == "🏠 Execution Terminal":
                 st.write(f"• **Target Take-Profit (TP):** ${tp_price:.2f}")
                 st.write(f"• **Max Stop-Loss (SL):** ${sl_price:.2f}")
         
-        # Premium Login / Payment Lock Screen
+        # Premium Login / Payment Lock Screen (Indentation Fixed)
         else:
             st.error("🔒 PREMIUM FEATURE LOCKED")
             st.write("Please upgrade to premium plan to access automated trading bot & advanced indicator scanning.")
@@ -178,6 +178,5 @@ if menu == "🏠 Execution Terminal":
             st.info("🔶 Binance Pay ID: 123456789 ($4 USD)")
             st.write("---")
             
-            # Login Input Field
+            # Login Input Field & Single-Line Safe Code Runner
             input_code = st.text_input("🔑 Enter Premium Activation Code:", type="password", key="user_code")
-            if st.button("🔓 Apply Code & Upgrade"):
