@@ -58,19 +58,25 @@ try:
 except Exception:
     api_connected = False
 
-# Public Binance API Call (Updated for live market feeds)
+# Public Binance API Call (Fixed Data Structure)
 def get_live_market_data(symbol):
     try:
         res = requests.get(f"https://binance.com{symbol}", timeout=2).json()
-        return float(res['lastPrice']), float(res['priceChangePercent'])
+        return {"price": float(res['lastPrice']), "change": float(res['priceChangePercent'])}
     except:
         mocks = {
-            'BTCUSDT': (62894.0, -0.6), 'ETHUSDT': (3420.0, 4.1), 'SOLUSDT': (184.6, 5.8), 'BNBUSDT': (585.0, -0.4),
-            'XRPUSDT': (0.62, 1.2), 'ADAUSDT': (0.48, -0.5), 'DOTUSDT': (6.75, 2.3), 'DOGEUSDT': (0.14, 3.5)
+            'BTCUSDT': {"price": 62894.0, "change": -0.6}, 
+            'ETHUSDT': {"price": 3420.0, "change": 4.1}, 
+            'SOLUSDT': {"price": 184.6, "change": 5.8}, 
+            'BNBUSDT': {"price": 585.0, "change": -0.4},
+            'XRPUSDT': {"price": 0.62, "change": 1.2}, 
+            'ADAUSDT': {"price": 0.48, "change": -0.5}, 
+            'DOTUSDT': {"price": 6.75, "change": 2.3}, 
+            'DOGEUSDT': {"price": 0.14, "change": 3.5}
         }
-        return mocks.get(symbol, (100.0, 0.0))
+        return mocks.get(symbol, {"price": 100.0, "change": 0.0})
 
-# ফিচার ১: মাল্টি-কয়েন স্ক্যানার ডেটা লোড (৮টি বড় কয়েন)
+# ৮টি বড় কয়েনের লাইভ ডেটা ডিকশনারিতে লোড করা
 symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOTUSDT', 'DOGEUSDT']
 market_data = {sym: get_live_market_data(sym) for sym in symbols}
 
@@ -86,18 +92,18 @@ if menu == "🏠 Execution Terminal":
     st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
     st.write("### 🪙 Global Liquidity Ticker (Expanded Multi-Coin Scan)")
     
-    # ২ লাইনে মোট ৮টি কয়েন সুন্দর গ্রিডে দেখাবে
+    # ২ লাইনে মোট ৮টি কয়েন সুন্দর গ্রিডে দেখাবে (এরর মুক্ত ফরম্যাট)
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']:,}", delta=f"{market_data['BTCUSDT'][1]:+.2f}%")
-    col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']:,}", delta=f"{market_data['ETHUSDT'][1]:+.2f}%")
-    col3.metric(label="Solana (SOL)", value=f"${market_data['SOLUSDT'][0]}", delta=f"{market_data['SOLUSDT'][1]:+.2f}%")
-    col4.metric(label="Binance (BNB)", value=f"${market_data['BNBUSDT'][0]}", delta=f"{market_data['BNBUSDT'][1]:+.2f}%")
+    col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']['price']:,}", delta=f"{market_data['BTCUSDT']['change']:+.2f}%")
+    col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']['price']:,}", delta=f"{market_data['ETHUSDT']['change']:+.2f}%")
+    col3.metric(label="Solana (SOL)", value=f"${market_data['SOLUSDT']['price']}", delta=f"{market_data['SOLUSDT']['change']:+.2f}%")
+    col4.metric(label="Binance (BNB)", value=f"${market_data['BNBUSDT']['price']}", delta=f"{market_data['BNBUSDT']['change']:+.2f}%")
     
     col5, col6, col7, col8 = st.columns(4)
-    col5.metric(label="Ripple (XRP)", value=f"${market_data['XRPUSDT'][0]}", delta=f"{market_data['XRPUSDT'][1]:+.2f}%")
-    col6.metric(label="Cardano (ADA)", value=f"${market_data['ADAUSDT'][0]}", delta=f"{market_data['ADAUSDT'][1]:+.2f}%")
-    col7.metric(label="Polkadot (DOT)", value=f"${market_data['DOTUSDT'][0]}", delta=f"{market_data['DOTUSDT'][1]:+.2f}%")
-    col8.metric(label="Dogecoin (DOGE)", value=f"${market_data['DOGEUSDT'][0]}", delta=f"{market_data['DOGEUSDT'][1]:+.2f}%")
+    col5.metric(label="Ripple (XRP)", value=f"${market_data['XRPUSDT']['price']}", delta=f"{market_data['XRPUSDT']['change']:+.2f}%")
+    col6.metric(label="Cardano (ADA)", value=f"${market_data['ADAUSDT']['price']}", delta=f"{market_data['ADAUSDT']['change']:+.2f}%")
+    col7.metric(label="Polkadot (DOT)", value=f"${market_data['DOTUSDT']['price']}", delta=f"{market_data['DOTUSDT']['change']:+.2f}%")
+    col8.metric(label="Dogecoin (DOGE)", value=f"${market_data['DOGEUSDT']['price']}", delta=f"{market_data['DOGEUSDT']['change']:+.2f}%")
     st.markdown("</div>", unsafe_allow_html=True)
     
     st.write("---")
@@ -126,7 +132,7 @@ if menu == "🏠 Execution Terminal":
     with left_layout:
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("📈 **HFT Execution Candlestick Analytics**")
-        sol_p = market_data['SOLUSDT'][0]
+        sol_p = market_data['SOLUSDT']['price']
         now = datetime.now()
         dates = [now - timedelta(minutes=x) for x in range(30, 0, -1)]
         opens = [sol_p - random.uniform(-1, 1) for _ in range(30)]
@@ -155,7 +161,6 @@ if menu == "🏠 Execution Terminal":
         rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
         
         st.write("---")
-        # ফিচার ২: ট্রেইলিং স্টপ-লস এবং টেকনিক্যাল ফিল্টার অপশন
         st.write("⚙️ **Advanced Strategy Configurations**")
         use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
         use_filters = st.checkbox("Enable RSI & MACD Trend Filters (⚠️ Avoid Fake Signals)", value=True)
@@ -167,16 +172,10 @@ if menu == "🏠 Execution Terminal":
                 st.balloons()
             
             best_coin = 'SOLUSDT'
-            coin_price = market_data[best_coin][0]
+            coin_price = market_data[best_coin]['price']
             
             st.success(f"🎯 Target Captured: Optimal setup loaded on {best_coin}.")
             
-            # ফিচার ৩: টেকনিক্যাল ফিল্টার স্ট্যাটাস ডিসপ্লে
             if use_filters:
                 st.markdown("""
                 <div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'>
-                    <span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | 
-                    <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span>
-                </div>
-                """, unsafe_allow_html=True)
-                
