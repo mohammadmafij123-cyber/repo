@@ -25,9 +25,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ৩. লোকাল ডাটাবেজ সিমুলেশন (ইউজার ডেটা স্টোর করার জন্য)
+# 3. Secure User Authentication State Management
 if "user_db" not in st.session_state:
-    st.session_state["user_db"] = {"admin@nexus.com": "admin123"} # ডিফল্ট ডেমো ইউজার
+    st.session_state["user_db"] = {"admin@nexus.com": "admin123"}
 if "logged_in_user" not in st.session_state:
     st.session_state["logged_in_user"] = None
 if "is_premium" not in st.session_state:
