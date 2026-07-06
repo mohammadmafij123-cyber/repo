@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import random
 
-# বাইন্যান্স লাইব্রেরি ইমপোর্ট করা
+# Import Binance Library
 try:
     from binance.client import Client
 except ImportError:
@@ -31,11 +31,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ৩. প্রিমিয়াম সাবস্ক্রিপশন স্টেট ম্যানেজমেন্ট
+# 3. Premium Subscription State Management
 if "is_premium" not in st.session_state:
     st.session_state["is_premium"] = False
 
-# আপনার গোপন অ্যাডমিন অ্যাক্টিভেশন কোড
+# Your Secret Premium Activation Code
 ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
 
 # Top Executive Header Bar
@@ -49,7 +49,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Streamlit Secrets থেকে সুরক্ষিতভাবে এপিআই কী দুটি নেওয়া
+# Read Streamlit Secrets
 try:
     binance_api_key = st.secrets["BINANCE_API_KEY"]
     binance_secret_key = st.secrets["BINANCE_SECRET_KEY"]
@@ -75,7 +75,7 @@ def get_live_market_data(symbol):
 symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOTUSDT', 'DOGEUSDT']
 market_data = {sym: get_live_market_data(sym) for sym in symbols}
 
-# 4. Sidebar Navigation & Upgrade Plan Section
+# 4. Sidebar Navigation
 st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
 menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 
@@ -85,7 +85,7 @@ if st.session_state["is_premium"]:
     st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
 else:
     st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
-    st.sidebar.info("বট আনলক করতে ডান পাশের কন্ট্রোল প্যানেল থেকে প্রো-তে আপগ্রেড করুন।")
+    st.sidebar.info("Unlock automated bot by upgrading to PRO via the Control Hub panel.")
 
 st.sidebar.write("---")
 st.sidebar.write("### 🛡️ FireWall Status")
@@ -111,7 +111,7 @@ if menu == "🏠 Execution Terminal":
     
     st.write("---")
     
-    # ২ কলাম লেআউট স্ট্রাকচার
+    # 2 Column Layout Structure
     left_layout, right_layout = st.columns([1.6, 1])
     
     with left_layout:
@@ -144,7 +144,7 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("### 🎛️ Algorithmic Control Hub")
         
-        # যদি ইউজার প্রিমিয়াম হয়
+        # If user is Premium
         if st.session_state["is_premium"]:
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
             st.write("---")
@@ -168,15 +168,16 @@ if menu == "🏠 Execution Terminal":
                 st.write(f"• **Target Take-Profit (TP):** ${tp_price:.2f}")
                 st.write(f"• **Max Stop-Loss (SL):** ${sl_price:.2f}")
         
-        # ফ্রি ইউজারদের জন্য এরর-মুক্ত সাধারণ পেমেন্ট লক ডিজাইন
+        # Premium Login / Payment Lock Screen
         else:
             st.error("🔒 PREMIUM FEATURE LOCKED")
-            st.write("অটো-ট্রেডিং এবং ইন্ডিকেটর স্ক্যানারটি ব্যবহার করতে প্রিমিয়াম প্ল্যানে আপগ্রেড করুন।")
+            st.write("Please upgrade to premium plan to access automated trading bot & advanced indicator scanning.")
             st.write("---")
-            st.write("**💸 পেমেন্ট মেথডসমূহ:**")
-            st.success("📢 বিকাশ (Personal): ০১৭XXXXXXXX (৫০০ টাকা)")
-            st.info("🔶 Binance Pay ID: ১২৩৪৫৬৭৮৯ ($৪ USD)")
+            st.write("**💸 Available Payment Methods:**")
+            st.success("📢 bKash (Personal): 017XXXXXXXX (500 BDT)")
+            st.info("🔶 Binance Pay ID: 123456789 ($4 USD)")
             st.write("---")
             
-            # সাবমিট বক্স এবং বাটন
+            # Login Input Field
             input_code = st.text_input("🔑 Enter Premium Activation Code:", type="password", key="user_code")
+            if st.button("🔓 Apply Code & Upgrade"):
