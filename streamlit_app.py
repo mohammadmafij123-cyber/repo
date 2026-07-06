@@ -28,17 +28,15 @@ st.markdown("""
     .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; }
     .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3) !important; }
     div[data-testid="stMetricValue"] { font-size: 26px; font-weight: bold; color: #f0b90b !important; }
-    
-    /* প্রিমিয়াম লক স্ক্রিন স্টাইল */
     .premium-lock-box { background: linear-gradient(135deg, #1f1905 0%, #161a1e 100%); border: 2px dashed #f0b90b; border-radius: 8px; padding: 25px; text-align: center; margin-top: 15px; }
     </style>
 """, unsafe_allow_html=True)
 
-# ৩. প্রিমিয়াম সাবস্ক্রিপশন স্টেট ম্যানেজমেন্ট (এরর ফ্রি ইন-মেমোরি ডাটা)
+# ৩. প্রিমিয়াম সাবস্ক্রিপশন স্টেট ম্যানেজমেন্ট
 if "is_premium" not in st.session_state:
     st.session_state["is_premium"] = False
 
-# আপনার গোপন অ্যাডমিন অ্যাক্টিভেশন কোড (আপনি চাইলে এটি পরিবর্তন করতে পারেন)
+# আপনার গোপন অ্যাডমিন অ্যাক্টিভেশন কোড
 ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
 
 # Top Executive Header Bar
@@ -83,14 +81,12 @@ st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:
 menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "⚙️ Cryptographic Vault"], label_visibility="collapsed")
 
 st.sidebar.write("---")
-
-# সাইডবারে প্রিমিয়াম স্ট্যাটাস এবং আপগ্রেড লাইভ কন্ট্রোল
 st.sidebar.write("### 👑 Membership Status")
 if st.session_state["is_premium"]:
     st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
 else:
     st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
-    st.sidebar.info("অটো-ট্রেডিং বট আনলক করতে ডান পাশের কন্ট্রোল প্যানেল থেকে প্রো-তে আপগ্রেড করুন।")
+    st.sidebar.info("বট আনলক করতে ডান পাশের কন্ট্রোল প্যানেল থেকে প্রো-তে আপগ্রেড করুন।")
 
 st.sidebar.write("---")
 st.sidebar.write("### 🛡️ FireWall Status")
@@ -115,6 +111,8 @@ if menu == "🏠 Execution Terminal":
     st.markdown("</div>", unsafe_allow_html=True)
     
     st.write("---")
+    
+    # এরর মুক্ত লেআউট স্ট্রাকচার (চার্ট এবং কন্ট্রোল হাবের মেইন ফিক্স)
     left_layout, right_layout = st.columns([1.6, 1])
     
     with left_layout:
@@ -147,7 +145,7 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("### 🎛️ Algorithmic Control Hub")
         
-        # কন্ডিশন: যদি ইউজার প্রিমিয়াম হয় তবেই মেইন ফিচার অন হবে
+        # লেভেলের কন্ডিশন ফিক্সড: যদি প্রিমিয়াম সেশন অন থাকে
         if st.session_state["is_premium"]:
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
             st.write("---")
@@ -155,7 +153,6 @@ if menu == "🏠 Execution Terminal":
             use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
             use_filters = st.checkbox("Enable RSI & MACD Trend Filters (⚠️ Avoid Fake Signals)", value=True)
             st.write("---")
-            
             if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
                 with st.spinner("Scanning 8 markets with RSI & MACD filters..."):
                     time.sleep(1.5)
@@ -164,8 +161,7 @@ if menu == "🏠 Execution Terminal":
                 coin_price = market_data[best_coin]['price']
                 st.success(f"🎯 Target Captured: Optimal setup loaded on {best_coin}.")
                 
-                if use_filters: 
-                    st.markdown("<div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'><span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span></div>", unsafe_allow_html=True)
+                if use_filters: st.markdown("<div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'><span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span></div>", unsafe_allow_html=True)
                     
                 tp_price = coin_price * (1 + (0.015 * rr_ratio))
                 sl_price = coin_price * 0.985
@@ -174,7 +170,9 @@ if menu == "🏠 Execution Terminal":
                 st.write(f"• **Entry Price:** ${coin_price:.2f}")
                 st.write(f"• **Target Take-Profit (TP):** ${tp_price:.2f}")
                 st.write(f"• **Max Stop-Loss (SL):** ${sl_price:.2f}")
-                
-                if use_trailing: 
-                    st.info("🛡️ Trailing Mechanism: ACTIVE (Profit will lock dynamically)")
+                if use_trailing: st.info("🛡️ Trailing Mechanism: ACTIVE")
         
+        # প্রিমিয়াম না হলে সরাসরি লক বক্স এবং অ্যাক্টিভেশন ফিল্ড স্ক্রিনে রেন্ডার হবে
+        else:
+            st.markdown("""
+                <div class='premium-lock-box'>
