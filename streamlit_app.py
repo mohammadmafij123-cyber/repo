@@ -115,12 +115,8 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='crypto-grid-box'><div class='card-title'>1. Quantum Node Verification</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Asymmetric cryptographic nodes verified.</p><div style='color: #02c076; font-size:13px; font-weight:bold;'>✓ Node Secured</div></div>", unsafe_allow_html=True)
     
     with card_col2:
-        if api_connected:
-            balance_status = "⚡ API Connected & Secured"
-            balance_color = "#02c076"
-        else:
-            balance_status = "⏳ Awaiting API Configuration"
-            balance_color = "#f8d347"
+        balance_status = "⚡ API Connected & Secured" if api_connected else "⏳ Awaiting API Configuration"
+        balance_color = "#02c076" if api_connected else "#f8d347"
         st.markdown(f"<div class='crypto-grid-box'><div class='card-title'>2. Margin Balance Pipeline</div><p style='color: #848e9c; font-size:13.5px; height: 40px;'>Live collateral feed routing via exchange secure handshake protocol.</p><div style='color: {balance_color}; font-size:13px; font-weight:bold;'>{balance_status}</div></div>", unsafe_allow_html=True)
     
     with card_col3:
@@ -176,4 +172,4 @@ if menu == "🏠 Execution Terminal":
             
             st.success(f"🎯 Target Captured: Optimal setup loaded on {best_coin}.")
             
-            if use_filters:
+            # স্পেসের এরর চিরতরে এড়াতে ফিল্টার ব্লক এক লাইনে নিয়ে আসা হয়েছে
