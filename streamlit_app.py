@@ -86,7 +86,7 @@ if st.session_state["is_premium"]:
     st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
 else:
     st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
-    st.sidebar.info("বট আনলক করতে ডান পাশের কন্ট্রোল প্যানেল থেকে প্রো-তে আপগ্রেড করুন।")
+    st.sidebar.info("বট আনলক করতে ডান পাশের কন্ট্রোল প্যানেল থেকে প্রো-তে আপগ্রেড করুন biographies।")
 
 st.sidebar.write("---")
 st.sidebar.write("### 🛡️ FireWall Status")
@@ -112,7 +112,7 @@ if menu == "🏠 Execution Terminal":
     
     st.write("---")
     
-    # এরর মুক্ত লেআউট স্ট্রাকচার (চার্ট এবং কন্ট্রোল হাবের মেইন ফিক্স)
+    # এরর মুক্ত লেআউট স্ট্রাকচার
     left_layout, right_layout = st.columns([1.6, 1])
     
     with left_layout:
@@ -145,7 +145,7 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("### 🎛️ Algorithmic Control Hub")
         
-        # লেভেলের কন্ডিশন ফিক্সড: যদি প্রিমিয়াম সেশন অন থাকে
+        # ক্র্যাশ এড়াতে এখানে স্ট্যাটাস চেক রান করা হলো
         if st.session_state["is_premium"]:
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
             st.write("---")
@@ -172,7 +172,7 @@ if menu == "🏠 Execution Terminal":
                 st.write(f"• **Max Stop-Loss (SL):** ${sl_price:.2f}")
                 if use_trailing: st.info("🛡️ Trailing Mechanism: ACTIVE")
         
-        # প্রিমিয়াম না হলে সরাসরি লক বক্স এবং অ্যাক্টিভেশন ফিল্ড স্ক্রিনে রেন্ডার হবে
         else:
             st.markdown("""
                 <div class='premium-lock-box'>
+                    <h4 style='color: #f0b90b; margin-top:0;'>🔒 PREMIUM FEATURE LOCKED</h4>
