@@ -9,36 +9,18 @@ import random
 # 1. Advanced Institutional Page Configuration
 st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
-# 2. TikTok Style Premium Dark Themes & Custom CSS
+# 2. Institutional Themes & Custom CSS
 st.markdown("""
     <style>
     .main { background-color: #0b0e11; color: #eaecef; }
     [data-testid="stSidebar"] { background-color: #12161c !important; border-right: 1px solid #24292e; }
-    
-    /* Top Header Bar */
     .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #12161c; padding: 18px 25px; margin: -60px -60px 30px -60px; border-bottom: 2px solid #24292e; }
     .nexus-logo { font-size: 24px; font-weight: 900; color: #f0b90b; font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
     .nexus-sub-logo { font-size: 13px; color: #848e9c; margin-left: 10px; font-weight: 500; }
     .system-status { font-family: monospace; font-size: 12px; color: #02c076; background-color: rgba(2, 192, 118, 0.1); padding: 4px 10px; border-radius: 4px; }
-    
-    /* Premium Block Containers */
-    .crypto-grid-box { background-color: #161a1e; border: 1px solid #24292e; border-radius: 8px; padding: 25px; margin-bottom: 15px; }
-    
-    /* TikTok Style Big Centered Box */
-    .tiktok-container { max-width: 480px; margin: 40px auto; background-color: #161a1e; border: 1px solid #2f363d; border-radius: 16px; padding: 40px 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); text-align: center; }
-    .tiktok-title { font-size: 32px; font-weight: 800; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin-bottom: 30px; letter-spacing: -0.5px; }
-    
-    /* Big Bold Form Label Styling */
-    label[data-testid="stWidgetLabel"] p { font-size: 16px !important; font-weight: 600 !important; color: #848e9c !important; text-align: left !important; margin-bottom: 8px !important; }
-    
-    /* Premium Large Button Customization */
-    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: 700; border-radius: 8px; border: none; height: 50px; font-size: 16px; margin-top: 15px; letter-spacing: 0.5px; }
-    .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(240, 185, 11, 0.3) !important; }
-    
-    /* Form Switch Footer */
-    .form-footer { font-size: 15px; color: #eaecef; text-align: center; margin-top: 30px; font-family: 'Segoe UI', sans-serif; }
-    .form-link { color: #fe2c55; font-weight: bold; text-decoration: none; cursor: pointer; }
-    
+    .crypto-grid-box { background-color: #161a1e; border: 1px solid #24292e; border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; }
+    .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3) !important; }
     div[data-testid="stMetricValue"] { font-size: 26px; font-weight: bold; color: #f0b90b !important; }
     </style>
 """, unsafe_allow_html=True)
@@ -51,7 +33,7 @@ if "logged_in_user" not in st.session_state:
 if "is_premium" not in st.session_state:
     st.session_state["is_premium"] = False
 if "auth_mode" not in st.session_state:
-    st.session_state["auth_mode"] = "login" # 'login' or 'signup'
+    st.session_state["auth_mode"] = "login"
 
 ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
 
@@ -68,15 +50,11 @@ st.markdown("""
 
 # --- TikTok Style Login & Sign Up Interface ---
 if st.session_state["logged_in_user"] is None:
-    
-    # মোড ১: প্রফেশনাল লগইন ইন্টারফেস
     if st.session_state["auth_mode"] == "login":
-        st.markdown("<div class='tiktok-container'>", unsafe_allow_html=True)
-        st.markdown("<div class='tiktok-title'>Log in to Nexus AI</div>", unsafe_allow_html=True)
-        
+        st.markdown("<div style='max-width: 480px; margin: 40px auto; background-color: #161a1e; border: 1px solid #2f363d; border-radius: 16px; padding: 40px 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); text-align: center;'>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 30px;'>Log in to Nexus AI</div>", unsafe_allow_html=True)
         login_email = st.text_input("Gmail Address", key="login_email", placeholder="Enter your registered Gmail")
         login_pass = st.text_input("Password", type="password", key="login_pass", placeholder="Enter your password")
-        
         if st.button("Continue"):
             if login_email in st.session_state["user_db"] and st.session_state["user_db"][login_email] == login_pass:
                 st.session_state["logged_in_user"] = login_email
@@ -85,24 +63,19 @@ if st.session_state["logged_in_user"] is None:
                 st.rerun()
             else:
                 st.error("Invalid Gmail or password. Please try again.")
-                
-        # টিকটকের মতো কাস্টম ফুটার যা মোড চেঞ্জ করবে
         st.write("")
-        st.markdown("<div class='form-footer'>Don't have an account?</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 15px; color: #eaecef; text-align: center; margin-top: 20px;'>Don't have an account?</div>", unsafe_allow_html=True)
         if st.button("Sign up", key="go_to_signup"):
             st.session_state["auth_mode"] = "signup"
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
         
-    # মোড ২: প্রফেশনাল সাইন-আপ ইন্টারফেস
     elif st.session_state["auth_mode"] == "signup":
-        st.markdown("<div class='tiktok-container'>", unsafe_allow_html=True)
-        st.markdown("<div class='tiktok-title'>Sign up for Nexus AI</div>", unsafe_allow_html=True)
-        
+        st.markdown("<div style='max-width: 480px; margin: 40px auto; background-color: #161a1e; border: 1px solid #2f363d; border-radius: 16px; padding: 40px 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); text-align: center;'>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 30px;'>Sign up for Nexus AI</div>", unsafe_allow_html=True)
         reg_email = st.text_input("Gmail Address", key="reg_email", placeholder="Enter a valid Gmail")
         reg_pass = st.text_input("Create Password", type="password", key="reg_pass", placeholder="Minimum 6 characters")
         reg_confirm = st.text_input("Confirm Password", type="password", key="reg_confirm", placeholder="Re-type password")
-        
         if st.button("Create Account"):
             if "@" not in reg_email or "." not in reg_email:
                 st.error("Please enter a valid Gmail address.")
@@ -118,9 +91,8 @@ if st.session_state["logged_in_user"] is None:
                 time.sleep(0.5)
                 st.session_state["auth_mode"] = "login"
                 st.rerun()
-                
         st.write("")
-        st.markdown("<div class='form-footer'>Already have an account?</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 15px; color: #eaecef; text-align: center; margin-top: 20px;'>Already have an account?</div>", unsafe_allow_html=True)
         if st.button("Log in", key="go_to_login"):
             st.session_state["auth_mode"] = "login"
             st.rerun()
@@ -150,7 +122,7 @@ else:
         st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
     else:
         st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
-        st.sidebar.info("Upgrade to PRO via the Control Hub to unlock trading features.")
+        st.sidebar.info("Upgrade to PRO using the Activation Hub below.")
         
     st.sidebar.write("---")
     if st.sidebar.button("🚪 TERMINATE SESSION (LOGOUT)"):
@@ -169,9 +141,20 @@ else:
     st.markdown("</div>", unsafe_allow_html=True)
     
     st.write("---")
-    left_layout, right_layout = st.columns([1.6, 1])
-    
-    with left_layout:
+
+    # কন্ডিশনাল কন্ট্রোল প্যানেল (সরাসরি মেইন পেজে ফুল উইডথ ফর্মে থাকবে)
+    if st.session_state["is_premium"]:
+        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+        st.write("### 🎛️ Algorithmic Control Hub (PRO ACTIVE)")
+        rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
+        use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
+        use_filters = st.checkbox("Enable RSI & MACD Trend Filters (⚠️ Avoid Fake Signals)", value=True)
+        if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
+            st.balloons()
+            st.success("🎯 Target Captured! Strategic Order Executed successfully.")
+        st.markdown("</div>", unsafe_allow_html=True)
+        
+        # চার্ট ডিসপ্লে
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("📈 **HFT Execution Candlestick Analytics**")
         sol_p = market_data['SOLUSDT']['price']
@@ -181,4 +164,3 @@ else:
         closes = [o + random.uniform(-1.5, 1.5) for o in opens]
         highs = [max(o, c) + random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
         lows = [min(o, c) - random.uniform(0.1, 0.8) for o, c in zip(opens, closes)]
-        
