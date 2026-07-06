@@ -28,11 +28,10 @@ st.markdown("""
     .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; }
     .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3) !important; }
     div[data-testid="stMetricValue"] { font-size: 26px; font-weight: bold; color: #f0b90b !important; }
-    .premium-lock-box { background: linear-gradient(135deg, #1f1905 0%, #161a1e 100%); border: 2px dashed #f0b90b; border-radius: 8px; padding: 25px; text-align: center; margin-top: 15px; }
     </style>
 """, unsafe_allow_html=True)
 
-# ৩. প্রিমিয়াম সাবস্ক্রিপশন স্টেট ম্যানেজমেন্ট (এরর ফ্রি ট্র্যাকার)
+# ৩. প্রিমিয়াম সাবস্ক্রিপশন স্টেট ম্যানেজমেন্ট
 if "is_premium" not in st.session_state:
     st.session_state["is_premium"] = False
 
@@ -112,7 +111,7 @@ if menu == "🏠 Execution Terminal":
     
     st.write("---")
     
-    # এরর মুক্ত লেআউট স্ট্রাকচার (বাম পাশে চার্ট, ডান পাশে কন্ট্রোল হাব/লক স্ক্রিন)
+    # ২ কলাম লেআউট স্ট্রাকচার
     left_layout, right_layout = st.columns([1.6, 1])
     
     with left_layout:
@@ -145,7 +144,7 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("### 🎛️ Algorithmic Control Hub")
         
-        # যদি ইউজার অলরেডি কোড দিয়ে প্রিমিয়াম করে ফেলে
+        # যদি ইউজার প্রিমিয়াম হয়
         if st.session_state["is_premium"]:
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
             st.write("---")
@@ -160,9 +159,7 @@ if menu == "🏠 Execution Terminal":
                 best_coin = 'SOLUSDT'
                 coin_price = market_data[best_coin]['price']
                 st.success(f"🎯 Target Captured: Optimal setup loaded on {best_coin}.")
-                
                 st.markdown("<div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'><span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span></div>", unsafe_allow_html=True)
-                    
                 tp_price = coin_price * (1 + (0.015 * rr_ratio))
                 sl_price = coin_price * 0.985
                 st.markdown("### 🟢 STRATEGIC ORDER OPENED")
@@ -171,7 +168,15 @@ if menu == "🏠 Execution Terminal":
                 st.write(f"• **Target Take-Profit (TP):** ${tp_price:.2f}")
                 st.write(f"• **Max Stop-Loss (SL):** ${sl_price:.2f}")
         
-        # ফ্রি ইউজারদের জন্য বিকাশ এবং বাইনান্স লক স্ক্রিন রেডি (শতভাগ ক্র্যাশ ফ্রি কোড)
+        # ফ্রি ইউজারদের জন্য এরর-মুক্ত সাধারণ পেমেন্ট লক ডিজাইন
         else:
-            st.markdown("""
-                <div style='background: linear-gradient(135deg, #1f1905 0%, #161a1e 100%); border: 2px dashed #f0b90b; border-radius: 8px; padding: 20px; text-align: center;'>
+            st.error("🔒 PREMIUM FEATURE LOCKED")
+            st.write("অটো-ট্রেডিং এবং ইন্ডিকেটর স্ক্যানারটি ব্যবহার করতে প্রিমিয়াম প্ল্যানে আপগ্রেড করুন।")
+            st.write("---")
+            st.write("**💸 পেমেন্ট মেথডসমূহ:**")
+            st.success("📢 বিকাশ (Personal): ০১৭XXXXXXXX (৫০০ টাকা)")
+            st.info("🔶 Binance Pay ID: ১২৩৪৫৬৭৮৯ ($৪ USD)")
+            st.write("---")
+            
+            # সাবমিট বক্স এবং বাটন
+            input_code = st.text_input("🔑 Enter Premium Activation Code:", type="password", key="user_code")
