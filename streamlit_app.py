@@ -28,7 +28,6 @@ st.markdown("""
 # 3. Secure User Authentication State Management
 if "user_db" not in st.session_state: st.session_state["user_db"] = {"admin@nexus.com": "admin123"}
 if "logged_in_user" not in st.session_state: st.session_state["logged_in_user"] = None
-if "is_premium" not in st.session_state: st.session_state["is_premium"] = False
 if "auth_mode" not in st.session_state: st.session_state["auth_mode"] = "login"
 
 ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
@@ -91,9 +90,6 @@ if st.session_state["logged_in_user"] is None:
 
 # --- After Login: Load Main Algorithmic Bot Dashboard ---
 else:
-    # Read Streamlit Secrets securely
-    api_connected = True if "BINANCE_API_KEY" in st.secrets else False
-
     def get_live_market_data(symbol):
         mocks = {
             'BTCUSDT': {"price": 62894.0, "change": -0.6}, 'ETHUSDT': {"price": 3420.0, "change": 4.1}, 
@@ -113,15 +109,11 @@ else:
     
     st.sidebar.write("---")
     st.sidebar.write("### 👑 Membership Status")
-    if st.session_state["is_premium"]: st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE")
-    else:
-        st.sidebar.warning("🛡️ PLAN: FREE ACCESS")
-        st.sidebar.info("Upgrade to PRO using the Activation Hub below.")
+    st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE") # সরাসরি প্রো একটিভ মোড শো করবে
         
     st.sidebar.write("---")
     if st.sidebar.button("🚪 TERMINATE SESSION (LOGOUT)"):
         st.session_state["logged_in_user"] = None
-        st.session_state["is_premium"] = False
         st.rerun()
 
     # মেইন পেজ ১: Execution Terminal
@@ -137,23 +129,29 @@ else:
         
         st.write("---")
 
-        # ১. পেমেন্ট গেটওয়ে (যদি ইউজার প্রিমিয়াম না হয়)
-        if not st.session_state["is_premium"]:
-            st.error("🔒 PREMIUM LICENSE GATEWAY VERIFICATION")
-            st.info("📢 bKash (Personal): 017XXXXXXXX (500 BDT) | 🔶 Binance Pay ID: 123456789 ($4 USD)")
-            input_code = st.text_input("🔑 Enter License Activation Code:", type="password", key="user_code")
-            if st.button("🔓 Verify & Activate Lifetime License"):
-                if input_code == ADMIN_SECRET_CODE:
-                    st.session_state["is_premium"] = True
-                    st.success("🎉 License Activated successfully! Reloading...")
-                    time.sleep(0.5)
-                    st.rerun()
-                else: st.error("❌ Invalid Code! Please provide a correct activation key.")
-                    
-        # ২. প্রিমিয়াম আনলকড ফিচার (ফিক্সড লেআউট: কোড দেওয়ার সাথে সাথে সব ফিচার লোড হবে)
-        if st.session_state["is_premium"]:
-            st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
-            st.write("### 🎛️ Algorithmic Control Hub (PRO ACTIVE)")
+        # ১০০% অলওয়েজ ওপেন ফিচার হাব (কোনো লক বা কন্ডিশন নেই)
+        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+        st.write("### 🎛️ Algorithmic Control Hub")
+        
+        rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
+        
+        # টিক বক্স দুটি সরাসরি রেন্ডার করা হলো
+        use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
+        use_filters = st.checkbox("Enable RSI & MACD Trend Filters (⚠️ Avoid Fake Signals)", value=True)
+        
+        st.write("---")
+        if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
+            with st.spinner("Analyzing 8 markets with RSI & MACD filters..."):
+                time.sleep(1)
+            st.balloons()
+            st.success("🎯 Target Captured! Strategic Order Executed successfully.")
             
-            rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
+            if use_filters:
+                st.markdown("<div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'><span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span></div>", unsafe_allow_html=True)
             
+            best_coin = 'SOLUSDT'
+            coin_price = market_data[best_coin]['price']
+            tp_price = coin_price * (1 + (0.015 * rr_ratio))
+            sl_price = coin_price * 0.985
+            st.markdown("### 🟢 STRATEGIC ORDER OPENED")
+            st.write(f"• **Asset Pair:** {best_coin} | **Entry Price:** ${coin_price:.2f}")
