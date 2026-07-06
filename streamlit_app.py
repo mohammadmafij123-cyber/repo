@@ -177,4 +177,3 @@ if menu == "🏠 Execution Terminal":
             st.success(f"🎯 Target Captured: Optimal setup loaded on {best_coin}.")
             
             if use_filters:
-
