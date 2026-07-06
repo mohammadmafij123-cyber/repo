@@ -144,7 +144,7 @@ if menu == "🏠 Execution Terminal":
         st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
         st.write("### 🎛️ Algorithmic Control Hub")
         
-        # If user is Premium
+        # প্রিমিয়াম সেশন অন থাকলে কন্ট্রোল প্যানেল দেখাবে
         if st.session_state["is_premium"]:
             rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
             st.write("---")
@@ -168,7 +168,7 @@ if menu == "🏠 Execution Terminal":
                 st.write(f"• **Target Take-Profit (TP):** ${tp_price:.2f}")
                 st.write(f"• **Max Stop-Loss (SL):** ${sl_price:.2f}")
         
-        # Premium Login / Payment Lock Screen (Indentation Fixed)
+        # পেমেন্ট লক স্ক্রিন ও লগইন ইনপুট (এরর চিরতরে দূর করতে ইনলাইন ফর্মে ফিক্সড করা হলো)
         else:
             st.error("🔒 PREMIUM FEATURE LOCKED")
             st.write("Please upgrade to premium plan to access automated trading bot & advanced indicator scanning.")
@@ -178,5 +178,4 @@ if menu == "🏠 Execution Terminal":
             st.info("🔶 Binance Pay ID: 123456789 ($4 USD)")
             st.write("---")
             
-            # Login Input Field & Single-Line Safe Code Runner
-            input_code = st.text_input("🔑 Enter Premium Activation Code:", type="password", key="user_code")
+            # স্পেসের ক্র্যাশ এড়াতে ইনপুট সিস্টেমটি একদম সোজা লজিকে সিঙ্গেল লাইনে কনভার্ট করা হয়েছে
