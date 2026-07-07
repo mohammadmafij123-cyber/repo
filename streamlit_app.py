@@ -174,4 +174,4 @@ safe_investment_amount = bl.calculate_dynamic_position_size(total_funds_availabl
 # আপনার অরিজিনাল প্রফেশনাল কালো ড্যাশবোর্ডের নিচে সুন্দর করে এই নতুন বক্সটি দেখাবে
 st.markdown("---")
 st.markdown(f"**🛡️ Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
-st.info(f"💰 ফান্ডের নিরাপত্তা নিশ্চিত করতে এই ট্রেডে সর্বোচ্চ **${safe_investment_amount}** ইনভেস্ট করার পরামর্শ দেওয়া হলো। (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
+st.info(f"💰 To ensure fund safety, maximum recommended investment for this trade is **${safe_investment_amount}**. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
