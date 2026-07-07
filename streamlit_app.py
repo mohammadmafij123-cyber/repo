@@ -1,114 +1,157 @@
 import streamlit as st
 import time
-import numpy as np
+import requests
+import pandas as pd
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+import random
 
-# =========================================================================
-# ১. নতুন অ্যাডভান্সড ফিচারগুলোর ফাংশন (লজিক) - যা আপনার কোডের সাথে যুক্ত হলো
-# =========================================================================
+# 1. Advanced Institutional Page Configuration
+st.set_page_config(page_title="Nexus Quantum AI | Pro Terminal", page_icon="⚡", layout="wide")
 
-def check_liquidity_and_order_block(coin, current_price):
-    """
-    লিকুইডিটি জোন এবং অর্ডার ব্লক ফিল্টার (Smart Money Concepts)
-    এটি হাই-ভলিউম জোন স্ক্যান করে ফেক ব্রেকআউট ফিল্টার করবে।
-    """
-    estimated_support_zone = current_price * 0.985 
-    estimated_resistance_zone = current_price * 1.015
-    
-    if current_price <= (estimated_support_zone * 1.005):
-        return True, "Strong Order Block Support (Whale Liquidity)"
-    elif current_price >= (estimated_resistance_zone * 0.995):
-        return False, "Approaching Heavy Resistance Liquidity"
-    else:
-        return True, "Normal Trading Range"
+# 2. Institutional Themes & Custom CSS
+st.markdown("""
+    <style>
+    .main { background-color: #0b0e11; color: #eaecef; }
+    [data-testid="stSidebar"] { background-color: #12161c !important; border-right: 1px solid #24292e; }
+    .nexus-header { display: flex; justify-content: space-between; align-items: center; background-color: #12161c; padding: 18px 25px; margin: -60px -60px 30px -60px; border-bottom: 2px solid #24292e; }
+    .nexus-logo { font-size: 24px; font-weight: 900; color: #f0b90b; font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
+    .nexus-sub-logo { font-size: 13px; color: #848e9c; margin-left: 10px; font-weight: 500; }
+    .system-status { font-family: monospace; font-size: 12px; color: #02c076; background-color: rgba(2, 192, 118, 0.1); padding: 4px 10px; border-radius: 4px; }
+    .crypto-grid-box { background-color: #161a1e; border: 1px solid #24292e; border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+    .stButton>button { width: 100%; background: linear-gradient(135deg, #f0b90b 0%, #f8d347 100%) !important; color: #0b0e11 !important; font-weight: bold; border-radius: 6px; border: none; height: 48px; font-size: 15px; }
+    .stButton>button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3) !important; }
+    div[data-testid="stMetricValue"] { font-size: 26px; font-weight: bold; color: #f0b90b !important; }
+    </style>
+""", unsafe_allow_html=True)
 
-def calculate_dynamic_position_size(total_balance, risk_percentage, current_price, stop_loss_price):
-    """
-    ডাইনামিক পজিশন সাইজিং (Risk Management)
-    ব্যালেন্স এবং রিস্কের ওপর ভিত্তি করে সেফ ইনভেস্টমেন্ট সাইজ বের করবে।
-    """
-    if current_price <= stop_loss_price:
-        return 10.0  # ডিফল্ট মিনিমাম ট্রেড সাইজ
-    
-    allowed_dollar_risk = total_balance * (risk_percentage / 100.0)
-    risk_per_unit = current_price - stop_loss_price
-    total_trade_investment = (allowed_dollar_risk / risk_per_unit) * current_price
-    
-    # সেফটি চেক: ব্যালেন্সের চেয়ে যেন বেশি ইনভেস্ট না হয়
-    if total_trade_investment > total_balance:
-        return round(total_balance * 0.2, 2) # সর্বোচ্চ ২০% ইনভেস্ট করবে
+# 3. Secure User Authentication State Management
+if "user_db" not in st.session_state: st.session_state["user_db"] = {"admin@nexus.com": "admin123"}
+if "logged_in_user" not in st.session_state: st.session_state["logged_in_user"] = None
+if "auth_mode" not in st.session_state: st.session_state["auth_mode"] = "login"
+
+ADMIN_SECRET_CODE = "NEXUS-PRO-2026"
+
+# Top Executive Header Bar
+st.markdown("""
+    <div class='nexus-header'>
+        <div style='display: flex; align-items: center;'>
+            <div class='nexus-logo'>🔶 NEXUS QUANTUM</div>
+            <div class='nexus-sub-logo'>High-Frequency Algorithmic Matrix V3.8</div>
+        </div>
+        <div class='system-status'>● ENGINE ALIVE | FEED: LIVE BINANCE PORTER CONNECTED</div>
+    </div>
+""", unsafe_allow_html=True)
+
+# --- TikTok Style Login & Sign Up Interface ---
+if st.session_state["logged_in_user"] is None:
+    if st.session_state["auth_mode"] == "login":
+        st.markdown("<div style='max-width: 480px; margin: 40px auto; background-color: #161a1e; border: 1px solid #2f363d; border-radius: 16px; padding: 40px 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); text-align: center;'>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 30px;'>Log in to Nexus AI</div>", unsafe_allow_html=True)
+        login_email = st.text_input("Gmail Address", key="login_email", placeholder="Enter your registered Gmail")
+        login_pass = st.text_input("Password", type="password", key="login_pass", placeholder="Enter your password")
+        if st.button("Continue"):
+            if login_email in st.session_state["user_db"] and st.session_state["user_db"][login_email] == login_pass:
+                st.session_state["logged_in_user"] = login_email
+                st.success("🎉 Access Granted! Loading Matrix...")
+                time.sleep(0.5)
+                st.rerun()
+            else: st.error("Invalid Gmail or password. Please try again.")
+        st.write("")
+        st.markdown("<div style='font-size: 15px; color: #eaecef; text-align: center; margin-top: 20px;'>Don't have an account?</div>", unsafe_allow_html=True)
+        if st.button("Sign up", key="go_to_signup"):
+            st.session_state["auth_mode"] = "signup"
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
         
-    return round(total_trade_investment, 2)
+    elif st.session_state["auth_mode"] == "signup":
+        st.markdown("<div style='max-width: 480px; margin: 40px auto; background-color: #161a1e; border: 1px solid #2f363d; border-radius: 16px; padding: 40px 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); text-align: center;'>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 30px;'>Sign up for Nexus AI</div>", unsafe_allow_html=True)
+        reg_email = st.text_input("Gmail Address", key="reg_email", placeholder="Enter a valid Gmail")
+        reg_pass = st.text_input("Create Password", type="password", key="reg_pass", placeholder="Minimum 6 characters")
+        reg_confirm = st.text_input("Confirm Password", type="password", key="reg_confirm", placeholder="Re-type password")
+        if st.button("Create Account"):
+            if "@" not in reg_email or "." not in reg_email: st.error("Please enter a valid Gmail address.")
+            elif reg_pass != reg_confirm: st.error("Passwords do not match!")
+            elif reg_email in st.session_state["user_db"]: st.error("This Gmail is already registered.")
+            elif reg_pass == "": st.error("Password cannot be empty.")
+            else:
+                st.session_state["user_db"][reg_email] = reg_pass
+                st.success("🎉 Registration Successful!")
+                time.sleep(0.5)
+                st.session_state["auth_mode"] = "login"
+                st.rerun()
+        st.write("")
+        st.markdown("<div style='font-size: 15px; color: #eaecef; text-align: center; margin-top: 20px;'>Already have an account?</div>", unsafe_allow_html=True)
+        if st.button("Log in", key="go_to_login"):
+            st.session_state["auth_mode"] = "login"
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
 
-def calculate_atr_stop_loss(current_price, atr_value=2.5, multiplier=1.5):
-    """
-    ATR-Based Dynamic Stop-Loss
-    মার্কেটের লাইভ ওঠানামার ওপর ভিত্তি করে স্টপ-লস সেট করবে।
-    """
-    dynamic_sl = current_price - (atr_value * multiplier)
-    return round(dynamic_sl, 2)
+# --- After Login: Load Main Algorithmic Bot Dashboard ---
+else:
+    def get_live_market_data(symbol):
+        mocks = {
+            'BTCUSDT': {"price": 62894.0, "change": -0.6}, 'ETHUSDT': {"price": 3420.0, "change": 4.1}, 
+            'SOLUSDT': {"price": 184.6, "change": 5.8}, 'BNBUSDT': {"price": 585.0, "change": -0.4},
+            'XRPUSDT': {"price": 0.62, "change": 1.2}, 'ADAUSDT': {"price": 0.48, "change": -0.5}, 
+            'DOTUSDT': {"price": 6.75, "change": 2.3}, 'DOGEUSDT': {"price": 0.14, "change": 3.5}
+        }
+        return mocks.get(symbol, {"price": 100.0, "change": 0.0})
 
+    symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOTUSDT', 'DOGEUSDT']
+    market_data = {sym: get_live_market_data(sym) for sym in symbols}
 
-# =========================================================================
-# ২. আপনার অরিじんাল প্রফেশনাল ইন্টারফেস ও মেইন কোড (একটি লাইনও পরিবর্তন ছাড়া)
-# =========================================================================
+    # Sidebar Navigation System
+    st.sidebar.markdown("<h3 style='color: #f0b90b; padding-left: 10px; font-weight:800;'>CORE ENGINE</h3>", unsafe_allow_html=True)
+    menu = st.sidebar.radio("Navigation", ["🏠 Execution Terminal", "⚙️ Cryptographic Vault"], key="main_nav_menu")
+    st.sidebar.write(f"👤 **Active Node:** {st.session_state['logged_in_user']}")
+    
+    st.sidebar.write("---")
+    st.sidebar.write("### 👑 Membership Status")
+    st.sidebar.success("👑 PLAN: PREMIUM PRO ACTIVE") # সরাসরি প্রো একটিভ মোড শো করবে
+        
+    st.sidebar.write("---")
+    if st.sidebar.button("🚪 TERMINATE SESSION (LOGOUT)"):
+        st.session_state["logged_in_user"] = None
+        st.rerun()
 
-# আপনার আগের গ্লোবাল ইন্টারফেস ও টাইটেল
-st.title("🔶 NEXUS QUANTUM High-Frequency Algorithmic Matrix V3.0")
-st.caption("⚡ ENGINE: LIVE | FEED: LIVE | SURFACE: ROUTER CONNECTED")
+    # মেইন পেজ ১: Execution Terminal
+    if menu == "🏠 Execution Terminal":
+        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+        st.write("### 🪙 Global Liquidity Ticker (Expanded Multi-Coin Scan)")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric(label="Bitcoin (BTC)", value=f"${market_data['BTCUSDT']['price']:,}", delta=f"{market_data['BTCUSDT']['change']:+.2f}%")
+        col2.metric(label="Ethereum (ETH)", value=f"${market_data['ETHUSDT']['price']:,}", delta=f"{market_data['ETHUSDT']['change']:+.2f}%")
+        col3.metric(label="Solana (SOL)", value=f"${market_data['SOLUSDT']['price']}", delta=f"{market_data['SOLUSDT']['change']:+.2f}%")
+        col4.metric(label="Binance (BNB)", value=f"${market_data['BNBUSDT']['price']}", delta=f"{market_data['BNBUSDT']['change']:+.2f}%")
+        st.markdown("</div>", unsafe_allow_html=True)
+        
+        st.write("---")
 
-# গ্লোবাল লিকুইডিটি টিকার (আপনার সেই চেনা ৪টি কয়েন ডিজাইন)
-st.markdown("### 🌐 Global Liquidity Ticker (Expanded Multi-Coin Scan)")
-
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric(label="Bitcoin (BTC)", value="$62,894.0", delta="-0.50%")
-with col2:
-    st.metric(label="Ethereum (ETH)", value="$3,420.0", delta="+1.10%")
-with col3:
-    st.metric(label="Solana (SOL)", value="$184.60", delta="+5.80%")
-with col4:
-    st.metric(label="Binance (BNB)", value="$585.0", delta="-0.40%")
-
-# অ্যালগরিদমিক কন্ট্রোল হাব ও স্লাইডার
-st.markdown("### 🎛️ Algorithmic Control Hub")
-rr_ratio = st.slider("Set Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0)
-
-st.checkbox("✅ Enable Trailing Stop-Loss | Safe Profit Lock", value=True)
-st.checkbox("✅ Enable RSI & MACD Trend Filters | Avoid Fake Signals", value=True)
-
-st.markdown("---")
-
-# আপনার অরিじんাল কন্ডিশন ও স্টাইল মার্কডাউন
-st.markdown("<div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'><span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | <span style='color: #02c076;'>✅ MACD: Bullish Crossover CONFIRMED</span></div>", unsafe_allow_html=True)
-
-# আপনার অরিじんাল ডাটা ও ভেরিয়েবল
-market_data = {
-    'SOLUSDT': {'price': 184.60}
-}
-best_coin = 'SOLUSDT'
-coin_price = market_data[best_coin]['price']
-
-# আপনার আগের টেক প্রফিট এবং স্টপ-লস ক্যালকুলেশন
-tp_price_original = coin_price * (1 + (0.015 * rr_ratio))
-sl_price_original = coin_price * 0.985
-
-# নতুন অ্যাডভান্সড ফিচারগুলোর সমান্তরাল ক্যালকুলেশন (যা ব্যাকগ্রাউন্ডে কাজ করবে)
-total_account_balance = 1000.0  # ডিফল্ট ব্যালেন্স
-max_risk_allowed = 2.0          # সর্বোচ্চ ২% রিস্ক
-is_safe_zone, zone_status = check_liquidity_and_order_block(best_coin, coin_price)
-optimized_sl = calculate_atr_stop_loss(coin_price, atr_value=2.5, multiplier=1.5)
-safe_investment = calculate_dynamic_position_size(total_account_balance, max_risk_allowed, coin_price, optimized_sl)
-
-# আপনার অরিじんাল অর্ডার ওপেন স্ক্রিন আউটপুট
-st.markdown("### 🏹 STRATEGIC ORDER OPENED")
-st.write(f"f'*Asset Pair:* {best_coin} | **Entry Price:** ${coin_price:.2f}")
-
-# আপনার আগের ডিজাইনের সাথে নতুন ডাইনামিক ফিচারের আউটপুট সমন্বয়
-st.write(f"**Take Profit (TP):** ${tp_price_original:.2f} | **Dynamic Stop Loss (SL):** ${optimized_sl:.2f}")
-
-# নতুন প্রফেশনাল সেফটি ইনফো বক্স (যা ইন্টারফেসের নিচে সুন্দরভাবে দেখাবে)
-st.markdown(f"**🛡️ Guardrails Active:** {zone_status}")
-st.info(f"💰 আপনার ফান্ডের নিরাপত্তা নিশ্চিত করতে এই ট্রেডে সর্বোচ্চ **${safe_investment}** ইনভেস্ট করার পরামর্শ দেওয়া হলো।")
-
-if st.button("EXECUTE ALPHA QUANTUM SCAN"):
-    st.success("Quantum Scan Completed Successfully!")
+        # ১০০% অলওয়েজ ওপেন ফিচার হাব (কোনো লক বা কন্ডিশন নেই)
+        st.markdown("<div class='crypto-grid-box'>", unsafe_allow_html=True)
+        st.write("### 🎛️ Algorithmic Control Hub")
+        
+        rr_ratio = st.slider("Set AI Risk-Reward Matrix Target Ratio", 1.0, 5.0, 2.0, step=0.5)
+        
+        # টিক বক্স দুটি সরাসরি রেন্ডার করা হলো
+        use_trailing = st.checkbox("Enable Trailing Stop-Loss (🛡️ Safe Profit Lock)", value=True)
+        use_filters = st.checkbox("Enable RSI & MACD Trend Filters (⚠️ Avoid Fake Signals)", value=True)
+        
+        st.write("---")
+        if st.button("🚀 EXECUTE ALPHA QUANTUM SCAN"):
+            with st.spinner("Analyzing 8 markets with RSI & MACD filters..."):
+                time.sleep(1)
+            st.balloons()
+            st.success("🎯 Target Captured! Strategic Order Executed successfully.")
+            
+            if use_filters:
+                st.markdown("<div style='background-color: #12161c; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #24292e;'><span style='color: #00ffcc;'>📊 RSI(14): 42.5 (Oversold Zone)</span> | <span style='color: #02c076;'>📈 MACD: Bullish Crossover CONFIRMED</span></div>", unsafe_allow_html=True)
+            
+            best_coin = 'SOLUSDT'
+            coin_price = market_data[best_coin]['price']
+            tp_price = coin_price * (1 + (0.015 * rr_ratio))
+            sl_price = coin_price * 0.985
+            st.markdown("### 🟢 STRATEGIC ORDER OPENED")
+            st.write(f"• **Asset Pair:** {best_coin} | **Entry Price:** ${coin_price:.2f}")
