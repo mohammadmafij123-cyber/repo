@@ -326,7 +326,6 @@ try:
         balance_data = test_exchange.fetch_balance()
         usdt_bal = balance_data.get("USDT", {}).get("free", 0)
         btc_bal = balance_data.get("BTC", {}).get("free", 0)
-
         col_usdt, col_btc = st.columns(2)
         with col_usdt:
             st.metric(label="Available USDT", value=f"${usdt_bal:,.2f}")
