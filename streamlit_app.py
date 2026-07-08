@@ -310,8 +310,7 @@ st.subheader("💳 Binance Live Account Balance")
 try:
     api_key = os.environ.get("BINANCE_API_KEY")
     secret_key = os.environ.get("BINANCE_SECRET_KEY")
-
-             test_exchange = ccxt.binance({
+    test_exchange = ccxt.binance({
             'apiKey': api_key,
             'secret': secret_key,
             'enableRateLimit': True,
