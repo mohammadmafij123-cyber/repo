@@ -311,12 +311,20 @@ try:
     api_key = os.environ.get("BINANCE_API_KEY")
     secret_key = os.environ.get("BINANCE_SECRET_KEY")
 
-    if api_key and secret_key:
-        test_exchange = ccxt.binance({
+            test_exchange = ccxt.binance({
             'apiKey': api_key,
             'secret': secret_key,
             'enableRateLimit': True,
+            'urls': {
+                'api': {
+                    'public': 'https://binance.com',
+                    'private': 'https://binance.com',
+                    'sapi': 'https://binance.com',
+                },
+                'www': 'https://binance.com'
+            }
         })
+
 
         balance_data = test_exchange.fetch_balance()
         usdt_bal = balance_data.get("USDT", {}).get("free", 0)
