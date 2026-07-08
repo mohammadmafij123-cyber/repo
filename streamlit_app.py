@@ -175,3 +175,42 @@ safe_investment_amount = bl.calculate_dynamic_position_size(total_funds_availabl
 st.markdown("---")
 st.markdown(f"**🛡️ Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
 st.info(f"💰 To ensure fund safety, maximum recommended investment for this trade is **${safe_investment_amount}**. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
+# ==========================================
+# আপনার কোডের ক্ষতি না করে নিচে ব্যালেন্স দেখার নতুন অংশ
+# ==========================================
+import ccxt
+import os
+import streamlit as st
+
+st.markdown("---")  # একটি দাগ টেনে আলাদা করা হলো
+st.subheader("💳 Binance Live Account Balance")
+
+try:
+    # রেন্ডার এর এনভায়রনমেন্ট ভ্যারিয়েবল থেকে কী নেওয়া হচ্ছে
+    api_key = os.environ.get("BINANCE_API_KEY")
+    secret_key = os.environ.get("BINANCE_SECRET_KEY")
+
+    if api_key and secret_key:
+        test_exchange = ccxt.binance(
+            {
+                "apiKey": api_key,
+                "secret": secret_key,
+                "enableRateLimit": True,
+            }
+        )
+
+        # ব্যালেন্স ডাটা আনা হচ্ছে
+        balance_data = test_exchange.fetch_balance()
+        usdt_bal = balance_data.get("USDT", {}).get("free", 0)
+        btc_bal = balance_data.get("BTC", {}).get("free", 0)
+
+        # সুন্দর করে স্ক্রিনে দেখানোর বক্স
+        col_usdt, col_btc = st.columns(2)
+        with col_usdt:
+            st.metric(label="Available USDT", value=f"${usdt_bal:,.2f}")
+        with col_btc:
+            st.metric(label="Available BTC", value=f"{btc_bal:.6f} BTC")
+    else:
+        st.warning("Binance API Keys are missing in Environment Variables.")
+except Exception as e:
+    st.error(f"Cannot load balance. Connection Error: {e}")
