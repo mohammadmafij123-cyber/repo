@@ -323,9 +323,6 @@ try:
                 'www': 'https://binance.com'
             }
         })
-                       
-
-
         balance_data = test_exchange.fetch_balance()
         usdt_bal = balance_data.get("USDT", {}).get("free", 0)
         btc_bal = balance_data.get("BTC", {}).get("free", 0)
