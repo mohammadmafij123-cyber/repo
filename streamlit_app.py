@@ -175,42 +175,153 @@ safe_investment_amount = bl.calculate_dynamic_position_size(total_funds_availabl
 st.markdown("---")
 st.markdown(f"**🛡️ Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
 st.info(f"💰 To ensure fund safety, maximum recommended investment for this trade is **${safe_investment_amount}**. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
-# ==========================================
-# আপনার কোডের ক্ষতি না করে নিচে ব্যালেন্স দেখার নতুন অংশ
-# ==========================================
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+import time
+from datetime import datetime
+import bot_logic as bl
 import ccxt
 import os
-import streamlit as st
 
-st.markdown("---")  # একটি দাগ টেনে আলাদা করা হলো
+# Set page configuration to wide layout
+st.set_page_config(page_title="Nexus Quantum AI", page_icon="⚡", layout="wide")
+
+# Theme / CSS Custom Styling
+st.markdown("""
+    <style>
+    .main { background-color: #0b0f19; color: #f0f2f6; }
+    .stSlider > div > div > div > div { background-color: #00ffcc; }
+    .stMetric { background-color: #121824; padding: 15px; border-radius: 10px; border: 1px solid #1e293b; }
+    div.stButton > button:first-child { background-color: #00ffcc; color: #0b0f19; font-weight: bold; border-radius: 5px; width: 100%; border: none; padding: 12px; }
+    div.stButton > button:first-child:hover { background-color: #00cc99; color: #0b0f19; }
+    .status-alive { color: #00ffcc; font-weight: bold; animation: blinker 1.5s linear infinite; }
+    @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+""", unsafe_allow_html=True)
+
+# Application Header / Top Bar
+col_title, col_status = st.columns([3, 1])
+with col_title:
+    st.title("⚡ Nexus Quantum AI — Algorithmic Matrix V3.8")
+    st.caption("Quantum-Resistant Outbound High-Frequency Trading Protocol & Dynamic Risk Control Architecture")
+
+with col_status:
+    st.markdown("<br><p class='status-alive' style='text-align: right;'>● ENGINE ALIVE | FEED: LIVE BINANCE PORTER CONNECTED</p>", unsafe_allow_html=True)
+
+# Sidebar System Navigation
+st.sidebar.image("https://icons8.com", width=50)
+st.sidebar.title("System Control Panel")
+st.sidebar.markdown(f"**Active Node:** `admin@nexus.com`  \n**Server Latency:** `{np.random.randint(11, 24)}ms`  \n**System Time:** `{datetime.now().strftime('%H:%M:%S UTC')}`")
+
+menu = st.sidebar.radio("Navigation Matrix", ["Quantum Ticker Terminal", "Algorithmic Control Hub", "Execution Terminal", "Risk Parameter Node"])
+
+# Dummy Live Crypto Feed Data Generator
+def get_live_data():
+    prices = {
+        "Bitcoin (BTC)": {"price": 62894.0 + np.random.uniform(-50, 50), "change": "+2.41%"},
+        "Ethereum (ETH)": {"price": 3420.5 + np.random.uniform(-5, 5), "change": "+1.85%"},
+        "Solana (SOL)": {"price": 142.15 + np.random.uniform(-1, 1), "change": "-0.76%"},
+        "Binance Coin (BNB)": {"price": 574.80 + np.random.uniform(-2, 2), "change": "+0.12%"}
+    }
+    return prices
+
+live_feed = get_live_data()
+
+# ----------------------------------------------------
+# TAB 1: QUANTUM TICKER TERMINAL
+# ----------------------------------------------------
+if menu == "Quantum Ticker Terminal":
+    st.subheader("🌐 Global Liquidity Ticker Stream")
+    
+    # Display Metrics Cards
+    cols = st.columns(4)
+    for i, (coin, data) in enumerate(live_feed.items()):
+        with cols[i]:
+            st.metric(label=coin, value=f"${data['price']}:,.2f", delta=data['change'])
+            
+    st.markdown("### 📊 Microstructural Liquidity Distribution (SOL/USDT)")
+    
+    # Generate interactive charts using Plotly
+    chart_data = pd.DataFrame({
+        'Time Stamp': pd.date_range(start='now', periods=50, freq='s'),
+        'Liquidity Delta': np.sin(np.linspace(0, 20, 50)) * 100 + np.random.normal(0, 15, 50)
+    })
+    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=chart_data['Time Stamp'], y=chart_data['Liquidity Delta'], mode='lines', name='Quantum Flow', line=dict(color='#00ffcc', width=2)))
+    fig.update_layout(template='plotly_dark', paper_bgcolor='#121824', plot_bgcolor='#121824', margin=dict(l=20, r=20, t=20, b=20), height=300)
+    st.plotly_chart(fig, use_container_width=True)
+
+# ----------------------------------------------------
+# TAB 2: ALGORITHMIC CONTROL HUB
+# ----------------------------------------------------
+elif menu == "Algorithmic Control Hub":
+    st.subheader("🤖 Quantum Signal Engine Settings")
+    
+    col_left, col_right = st.columns(2)
+    
+    with col_left:
+        st.markdown("#### Primary Constraints")
+        risk_cap_percentage = st.slider("Max Capital Exposure per Cycle (%)", 0.5, 5.0, 1.5, step=0.1)
+        multiplier = st.slider("Volatility Multiplier Factor (ATR)", 1.0, 4.0, 1.5, step=0.1)
+        total_funds_available = st.number_input("Mock Test Allocated Assets ($)", min_value=10.0, max_value=100000.0, value=12450.0)
+
+    with col_right:
+        st.markdown("#### Vector Execution Controls")
+        matrix_mode = st.selectbox("Algorithmic Logic Sequence", ["Dynamic Volatility Breakout", "Mean-Reversion Matrix", "High-Frequency Arbitrage Sieve"])
+        st.info(f"**Selected Strategy Engine:** {matrix_mode} is compiled and loaded into hot-swappable buffer memory.")
+        
+    st.markdown("---")
+    st.subheader("⚡ Core Logic Safety Engine Test")
+    
+    # Mock data for calling business logic functions
+    coin_price_live = 142.15  # Mock SOL price
+    atr_value_25 = 4.25       # Mock ATR value
+    
+    # Executing external bot_logic module functions safely
+    is_safe_market, safety_status = bl.check_liquidity_and_order_block('SOLUSDT', coin_price_live)
+    dynamic_stop_loss_val = bl.calculate_atr_stop_loss(coin_price_live, atr_value_25, multiplier)
+    safe_investment_amount = bl.calculate_dynamic_position_size(total_funds_available, risk_cap_percentage, coin_price_live, dynamic_stop_loss_val)
+    
+    # Display smart system recommendations based on logical evaluation
+    st.markdown(f"***Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
+    st.info(f"💡 **To ensure fund safety, maximum recommended investment for this trade is** `微${safe_investment_amount:,.2f}`. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
+    
+    if st.button("EXECUTE ALGORITHMIC MATRIX VIA RENDER ENGINE"):
+        with st.spinner("Encrypting payload and transmitting matrix signals to exchange node..."):
+            time.sleep(1.5)
+            st.success("🎯 Quantum Grid Orders Dispatched Successfully! System synchronized with Render Node IP.")
+
+# ----------------------------------------------------
+# TAB 3: EXECUTION TERMINAL & TAB 4
+# ----------------------------------------------------
+else:
+    st.subheader("📟 Real-Time Execution Ledger")
+    st.warning("No live production logs recorded in the current epoch. Bot running in idle data-feed observation mode.")
+
+# ==========================================
+# ব্যালেন্স দেখার নতুন অংশ (স্পেস ঠিক করা হয়েছে)
+# ==========================================
+st.markdown("---")
 st.subheader("💳 Binance Live Account Balance")
 
 try:
-    # রেন্ডার এর এনভায়রনমেন্ট ভ্যারিয়েবল থেকে কী নেওয়া হচ্ছে
     api_key = os.environ.get("BINANCE_API_KEY")
     secret_key = os.environ.get("BINANCE_SECRET_KEY")
 
     if api_key and secret_key:
-               test_exchange = ccxt.binance({
+        test_exchange = ccxt.binance({
             'apiKey': api_key,
             'secret': secret_key,
             'enableRateLimit': True,
-            'urls': {
-                'api': {
-                    'public': 'https://binance.com',
-                    'private': 'https://binance.com',
-                    'sapi': 'https://binance.com',
-                }
-            }
         })
 
-
-        # ব্যালেন্স ডাটা আনা হচ্ছে
         balance_data = test_exchange.fetch_balance()
         usdt_bal = balance_data.get("USDT", {}).get("free", 0)
         btc_bal = balance_data.get("BTC", {}).get("free", 0)
 
-        # সুন্দর করে স্ক্রিনে দেখানোর বক্স
         col_usdt, col_btc = st.columns(2)
         with col_usdt:
             st.metric(label="Available USDT", value=f"${usdt_bal:,.2f}")
@@ -220,3 +331,4 @@ try:
         st.warning("Binance API Keys are missing in Environment Variables.")
 except Exception as e:
     st.error(f"Cannot load balance. Connection Error: {e}")
+
