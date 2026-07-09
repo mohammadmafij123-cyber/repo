@@ -175,19 +175,18 @@ safe_investment_amount = bl.calculate_dynamic_position_size(total_funds_availabl
 st.markdown("---")
 st.markdown(f"**🛡️ Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
 st.info(f"💰 To ensure fund safety, maximum recommended investment for this trade is **${safe_investment_amount}**. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
-
 # --- Live Binance Wallet Balance Check ---
 from binance.client import Client
 import streamlit as st
 
 # আপনার আসল বাইনান্স এপিআই তথ্য দুটি এখানে বসান
-api_key = "YOUR_ACTUAL_API_KEY"
-api_secret = "YOUR_ACTUAL_API_SECRET"
+api_key = "a49Yn6tCuomPjRxVmmLh9DBtyOhjDrpg9X2kEzGJg7sqkrLdC7agBEM4oFYfIROM"
+api_secret = "PxI5rtfZ9JFqExa6K25LU4RV3B71hmni9ci8GvWlUVtv5GpHnS1vxzNRONrKBQfy"
 
 try:
     local_client = Client(api_key.strip(), api_secret.strip())
     account_info = local_client.get_account()
-    
+
     st.sidebar.success("🟢 Binance API 100% Connected Locally!")
     st.sidebar.subheader("💰 Live Wallet Balance")
     has_balance = False
