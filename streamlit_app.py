@@ -176,13 +176,23 @@ st.markdown("---")
 st.markdown(f"**🛡️ Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
 st.info(f"💰 To ensure fund safety, maximum recommended investment for this trade is **${safe_investment_amount}**. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
 
-# --- API Connection Check (একদম শেষে যোগ করা হলো) ---
+# --- Render API Live Checking ---
+import os
+from binance.client import Client
+
 try:
-    if 'client' in locals() or 'client' in globals():
-        client.get_server_time()
-        st.sidebar.success("🟢 Binance API Status: 100% Connected!")
+    # Render এর Environment Variables থেকে আপনার কী-গুলো রিড করা হচ্ছে
+    # (এখানে 'BINANCE_API_KEY' ও 'BINANCE_SECRET_KEY' এর জায়গায় Render-এ আপনি যে নাম দিয়েছেন ঠিক সেটি বসাবেন)
+    render_api = os.environ.get('BINANCE_API_KEY')
+    render_secret = os.environ.get('BINANCE_SECRET_KEY')
+    
+    if render_api and render_secret:
+        # নতুন লাইভ টেস্ট ক্লায়েন্ট তৈরি
+        test_client = Client(render_api.strip(), render_secret.strip())
+        test_client.get_server_time() # বাইনান্স সার্ভার টেস্ট
+        st.sidebar.success("🟢 Binance API Connected 100% Successfully via Render!")
     else:
-        st.sidebar.warning("🟡 Client Variable Not Found at the End.")
+        st.sidebar.warning("🔴 API Keys not found in Render Environment Variables.")
 except Exception as e:
-    st.sidebar.error(f"🔴 Connection Error: {e}")
+    st.sidebar.error(f"🔴 Render API Connection Failed: {e}")
 
