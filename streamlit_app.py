@@ -176,3 +176,13 @@ st.markdown("---")
 st.markdown(f"**🛡️ Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
 st.info(f"💰 To ensure fund safety, maximum recommended investment for this trade is **${safe_investment_amount}**. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
 
+# --- API Connection Check (একদম শেষে যোগ করা হলো) ---
+try:
+    if 'client' in locals() or 'client' in globals():
+        client.get_server_time()
+        st.sidebar.success("🟢 Binance API Status: 100% Connected!")
+    else:
+        st.sidebar.warning("🟡 Client Variable Not Found at the End.")
+except Exception as e:
+    st.sidebar.error(f"🔴 Connection Error: {e}")
+
