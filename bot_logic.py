@@ -22,3 +22,27 @@ def calculate_dynamic_position_size(total_balance, risk_percentage, current_pric
 
 def calculate_atr_stop_loss(current_price, atr_value=2.5, multiplier=1.5):
     return round(current_price - (atr_value * multiplier), 2)
+
+# --- Live Binance Wallet Balance Check ---
+from binance.client import Client
+import streamlit as st
+
+# আপনার আসল বাইনান্স এপিআই তথ্য দুটি এখানে বসান
+api_key = "YOUR_ACTUAL_API_KEY"
+api_secret = "YOUR_ACTUAL_API_SECRET"
+
+try:
+    local_client = Client(api_key.strip(), api_secret.strip())
+    account_info = local_client.get_account()
+    
+    st.sidebar.success("🟢 Binance API 100% Connected Locally!")
+    st.sidebar.subheader("💰 Live Wallet Balance")
+    has_balance = False
+    for asset in account_info['balances']:
+        if float(asset['free']) > 0:
+            st.sidebar.write(f"**{asset['asset']}:** {asset['free']}")
+            has_balance = True
+    if not has_balance:
+        st.sidebar.info("Your Binance Account Balance is 0.00")
+except Exception as e:
+    st.sidebar.error(f"🔴 Connection Failed: {e}")
