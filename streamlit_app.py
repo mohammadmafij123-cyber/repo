@@ -176,23 +176,27 @@ st.markdown("---")
 st.markdown(f"**🛡️ Smart Guardrails Active:** <span style='color: #00ffcc; font-weight: bold;'>{safety_status}</span>", unsafe_allow_html=True)
 st.info(f"💰 To ensure fund safety, maximum recommended investment for this trade is **${safe_investment_amount}**. (Volatility-Adjusted SL: ${dynamic_stop_loss_val})")
 
-# --- Render API Live Checking ---
-import os
+# --- Live Binance Wallet Balance Check ---
 from binance.client import Client
+import streamlit as st
+
+# আপনার আসল বাইনান্স এপিআই তথ্য দুটি এখানে বসান
+api_key = "YOUR_ACTUAL_API_KEY"
+api_secret = "YOUR_ACTUAL_API_SECRET"
 
 try:
-    # Render এর Environment Variables থেকে আপনার কী-গুলো রিড করা হচ্ছে
-    # (এখানে 'BINANCE_API_KEY' ও 'BINANCE_SECRET_KEY' এর জায়গায় Render-এ আপনি যে নাম দিয়েছেন ঠিক সেটি বসাবেন)
-    render_api = os.environ.get('BINANCE_API_KEY')
-    render_secret = os.environ.get('BINANCE_SECRET_KEY')
+    local_client = Client(api_key.strip(), api_secret.strip())
+    account_info = local_client.get_account()
     
-    if render_api and render_secret:
-        # নতুন লাইভ টেস্ট ক্লায়েন্ট তৈরি
-        test_client = Client(render_api.strip(), render_secret.strip())
-        test_client.get_server_time() # বাইনান্স সার্ভার টেস্ট
-        st.sidebar.success("🟢 Binance API Connected 100% Successfully via Render!")
-    else:
-        st.sidebar.warning("🔴 API Keys not found in Render Environment Variables.")
+    st.sidebar.success("🟢 Binance API 100% Connected Locally!")
+    st.sidebar.subheader("💰 Live Wallet Balance")
+    has_balance = False
+    for asset in account_info['balances']:
+        if float(asset['free']) > 0:
+            st.sidebar.write(f"**{asset['asset']}:** {asset['free']}")
+            has_balance = True
+    if not has_balance:
+        st.sidebar.info("Your Binance Account Balance is 0.00")
 except Exception as e:
-    st.sidebar.error(f"🔴 Render API Connection Failed: {e}")
+    st.sidebar.error(f"🔴 Connection Failed: {e}")
 
